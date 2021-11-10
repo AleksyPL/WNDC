@@ -13,15 +13,13 @@ public class Player : MonoBehaviour
         jump,
         ledgeClimbing,
         chainClimbing,
+        ropeGrappling,
         slide,
         dead
     }
     [SerializeField]
-    internal PlayerMovement movement;
+    internal PlayerMovementBase movement;
     internal StateMachine currentState;
-    public float walkSpeed;
-    public float jumpForce;
-    public float slideForce;
     // Start is called before the first frame update
     void Start()
     {
