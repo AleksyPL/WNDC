@@ -10,7 +10,6 @@ public class PlayerMovementAir : MonoBehaviour
     internal PlayerMovementGrapplingRope grappleRopeScript;
 
     internal bool ledgeDetected;
-    
     internal bool isGrappling;
     internal Vector2 ledgePositionBottom;
     private Vector2 ledgePosition1;
@@ -24,7 +23,7 @@ public class PlayerMovementAir : MonoBehaviour
     public SpringJoint2D springJoint;
     public Transform grapplingFirePoint;
     public LayerMask grapplableLayers;
-    //private GameObject grappleRope;
+    public float grappleDistance;
     
     
     void Start()
@@ -37,7 +36,23 @@ public class PlayerMovementAir : MonoBehaviour
     {
         if(baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.ropeGrappling && isGrappling)
         {
-            if((baseMovementScript.surroundingsCheckerScript.isFacingRight && baseMovementScript.myRigidBody.velocity.x > 1f) || (!baseMovementScript.surroundingsCheckerScript.isFacingRight && baseMovementScript.myRigidBody.velocity.x < -1f))
+            if(baseMovementScript.myRigidBody.velocity.x > 10f)
+            {
+                baseMovementScript.myRigidBody.velocity = new Vector2(10f, baseMovementScript.myRigidBody.velocity.y);
+            }
+            else if (baseMovementScript.myRigidBody.velocity.x < -10f)
+            {
+                baseMovementScript.myRigidBody.velocity = new Vector2(-10f, baseMovementScript.myRigidBody.velocity.y);
+            }
+            if (baseMovementScript.myRigidBody.velocity.y > 10f)
+            {
+                baseMovementScript.myRigidBody.velocity = new Vector2(baseMovementScript.myRigidBody.velocity.x, 10f);
+            }
+            else if (baseMovementScript.myRigidBody.velocity.y < -10f)
+            {
+                baseMovementScript.myRigidBody.velocity = new Vector2(baseMovementScript.myRigidBody.velocity.x, -10f);
+            }
+            if ((baseMovementScript.surroundingsCheckerScript.isFacingRight && baseMovementScript.myRigidBody.velocity.x > 1f) || (!baseMovementScript.surroundingsCheckerScript.isFacingRight && baseMovementScript.myRigidBody.velocity.x < -1f))
             {
                 baseMovementScript.FlipCharacter();
             }
@@ -46,11 +61,6 @@ public class PlayerMovementAir : MonoBehaviour
     internal void Falling()
     {
         baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.fall;
-        //if (position.x < 0 && isFacingRight || position.x > 0 && !isFacingRight)
-        //{
-        //    FlipCharacter();
-        //    myRigidBody.velocity = new Vector2(myRigidBody.velocity.x * -0.75f, myRigidBody.velocity.y);
-        //}
     }
     internal void Jump(float vectorX, float vectorY)
     {
@@ -86,11 +96,15 @@ public class PlayerMovementAir : MonoBehaviour
         {
             baseMovementScript.animatorScript.animator.speed = 1;
             transform.position = new Vector2(transform.position.x, transform.position.y + (baseMovementScript.position.y * 0.06f));
-            if (baseMovementScript.surroundingsCheckerScript.isTouchingActivePlatform && baseMovementScript.position.y > 0)
+            if (baseMovementScript.surroundingsCheckerScript.isTouchingCeiling && baseMovementScript.position.y > 0)
             {
-                float chainOffsetY = baseMovementScript.boxCollider.bounds.extents.y + 1f + baseMovementScript.surroundingsCheckerScript.chainCheckDistance + 0.1f;
-                transform.position = new Vector2(transform.position.x, transform.position.y + chainOffsetY);
-                baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.idle;
+                float chainOffsetY = baseMovementScript.boxCollider.bounds.extents.y + 1f + baseMovementScript.surroundingsCheckerScript.chainCheckDistance + 0.2f;
+                RaycastHit2D hit = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center + new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y), new Vector3(2 * baseMovementScript.boxCollider.bounds.extents.x, 0.1f, 0), 0f, Vector2.up, chainOffsetY);
+                if (hit.collider.gameObject.layer != baseMovementScript.surroundingsCheckerScript.whatIsGround)
+                {
+                    transform.position = new Vector2(transform.position.x, transform.position.y + chainOffsetY);
+                    baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.idle;
+                }
             }
         }
     }
@@ -139,32 +153,48 @@ public class PlayerMovementAir : MonoBehaviour
     public void AttachToTheChain(float chainOffsetX, float chainOffsetY, float raycastOffsetY)
     {
         RaycastHit2D hit = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center - new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y - 0.1f), new Vector3(2 * baseMovementScript.boxCollider.bounds.extents.x, 0.1f, 0), 0f, Vector2.down, raycastOffsetY, baseMovementScript.surroundingsCheckerScript.whatIsChain);
-        if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
+        if(hit.collider !=null)
         {
-            transform.position = new Vector2(hit.collider.bounds.center.x - chainOffsetX, transform.position.y + chainOffsetY);
-        }
-        else
-        {
-            transform.position = new Vector2(hit.collider.bounds.center.x + chainOffsetX, transform.position.y + chainOffsetY);
+            if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
+            {
+                transform.position = new Vector2(hit.collider.bounds.center.x - chainOffsetX, transform.position.y + chainOffsetY);
+            }
+            else
+            {
+                transform.position = new Vector2(hit.collider.bounds.center.x + chainOffsetX, transform.position.y + chainOffsetY);
+            }
         }
     }
     internal void SetGrapplePoint()
     {
         Vector3 distanceVector = baseMovementScript.mousePosition - grapplingFirePoint.position;
-        RaycastHit2D hit = Physics2D.Raycast(grapplingFirePoint.position, distanceVector.normalized, Mathf.Infinity, grapplableLayers);
+        RaycastHit2D hit = Physics2D.Raycast(grapplingFirePoint.position, distanceVector.normalized, grappleDistance, grapplableLayers);
         if(hit.collider != null)
         {
             grapplePoint = hit.point;
             isGrappling = true;
             grappleRopeScript.enabled = true;
+            Grapple();
         }
     }
     internal void Grapple()
     {
+        baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.ropeGrappling;
         springJoint.autoConfigureDistance = false;
         springJoint.connectedAnchor = grapplePoint;
         springJoint.distance = 0.2f;
         springJoint.frequency = 1f;
         springJoint.enabled = true;
+    }
+    internal void DetachGrapplingHook()
+    {
+        isGrappling = false;
+        springJoint.enabled = false;
+        grappleRopeScript.enabled = false;
+    }
+    private void OnDrawGizmos()
+    {
+        //grapplingHook
+        Gizmos.DrawLine(baseMovementScript.mousePosition, grapplingFirePoint.position);
     }
 }

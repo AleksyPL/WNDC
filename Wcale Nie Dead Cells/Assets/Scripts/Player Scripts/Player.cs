@@ -15,10 +15,13 @@ public class Player : MonoBehaviour
         chainClimbing,
         ropeGrappling,
         slide,
+        dash,
         dead
     }
     [SerializeField]
-    internal PlayerMovementBase movement;
+    internal PlayerMovementBase baseMovementScript;
+    [SerializeField]
+    internal AbilityCooldowns cooldownScript;
     internal StateMachine currentState;
     // Start is called before the first frame update
     void Start()

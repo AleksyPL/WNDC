@@ -25,6 +25,7 @@ public class PlayerMovementBase : MonoBehaviour
     internal bool canFlip;
     internal bool canJump;
     internal bool canGrapple;
+    internal bool canDash;
     internal bool canClimbLedge;
     internal bool canClimbChain;
 
@@ -38,6 +39,7 @@ public class PlayerMovementBase : MonoBehaviour
         canMove = false;
         canJump = false;
         canGrapple = false;
+        canDash = false;
         canClimbLedge = false;
         canClimbChain = false;
     }
@@ -90,32 +92,37 @@ public class PlayerMovementBase : MonoBehaviour
                 mainPlayerScript.currentState = Player.StateMachine.idle;
                 myRigidBody.velocity = Vector2.zero;
             }
-            if (position.x != 0 && position.y == 0)
+            if (position.x != 0)
             {
                 mainPlayerScript.currentState = Player.StateMachine.walk;
                 myRigidBody.velocity = new Vector2(Mathf.Round(position.x) * groundMovementScript.walkSpeed, myRigidBody.velocity.y);
                 FlipCharacter();
             }
-            if ((position.y > 0 || Input.GetButton("Jump")) && canJump && !surroundingsCheckerScript.isTouchingChain && !canClimbChain)
+            if (Input.GetButton("Jump") && canJump && !surroundingsCheckerScript.isTouchingChain)
             {
                 mainPlayerScript.currentState = Player.StateMachine.jump;
                 airMovementScript.Jump(myRigidBody.velocity.x, airMovementScript.jumpForce);
             }
+            if (Input.GetButton("Fire3") && canDash && mainPlayerScript.cooldownScript.dashReady)
+            {
+                groundMovementScript.Dash();
+            }
             if (position.y < 0 && !surroundingsCheckerScript.isTouchingChain)
             {
                 mainPlayerScript.currentState = Player.StateMachine.slide;
-                //TODO Slide
+                //TODO Slideasd
             }
-            if(position.y != 0 && mainPlayerScript.currentState != Player.StateMachine.chainClimbing && canClimbChain)
+            if(mainPlayerScript.currentState != Player.StateMachine.chainClimbing && canClimbChain)
             {
-                mainPlayerScript.currentState = Player.StateMachine.chainClimbing;
-                if(surroundingsCheckerScript.isTouchingChain && !canJump)
+                if(position.y > 0 && surroundingsCheckerScript.isTouchingChain && !canJump)
                 {
                     airMovementScript.AttachToTheChain(0.35f, 0.2f, 0.1f);
+                    mainPlayerScript.currentState = Player.StateMachine.chainClimbing;
                 }
-                else if (surroundingsCheckerScript.isTouchingActivePlatform && canJump)
+                else if (position.y < 0 && !surroundingsCheckerScript.isTouchingChain && canJump)
                 {
                     airMovementScript.AttachToTheChain(0.35f, -(boxCollider.bounds.size.y + 1f - surroundingsCheckerScript.chainCheckDistance + 0.1f), 1.1f);
+                    mainPlayerScript.currentState = Player.StateMachine.chainClimbing;
                 }
             }
         }
@@ -149,34 +156,29 @@ public class PlayerMovementBase : MonoBehaviour
         }
         if (mainPlayerScript.currentState != Player.StateMachine.ropeGrappling && canGrapple && !airMovementScript.isGrappling && RPM_hold)
         {
-            mainPlayerScript.currentState = Player.StateMachine.ropeGrappling;
             airMovementScript.SetGrapplePoint();
-            airMovementScript.Grapple();
         }
         else if (mainPlayerScript.currentState == Player.StateMachine.ropeGrappling && !RPM_hold)
         {
-            airMovementScript.isGrappling = false;
-            airMovementScript.springJoint.enabled = false;
-            airMovementScript.grappleRopeScript.enabled = false;
+            airMovementScript.DetachGrapplingHook();
             airMovementScript.Falling();
         }
     }
-    
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center - new Vector3(0, GetComponent<BoxCollider2D>().bounds.extents.y + 0.05f), new Vector3(GetComponent<BoxCollider2D>().bounds.extents.x, 0.1f, 0));
+        Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center + new Vector3(0, GetComponent<BoxCollider2D>().bounds.extents.y + 0.05f), new Vector3(2 * GetComponent<BoxCollider2D>().bounds.extents.x, 0.1f, 0));
         Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center - new Vector3(0, GetComponent<BoxCollider2D>().bounds.extents.y + 0.05f), new Vector3(2 * GetComponent<BoxCollider2D>().bounds.extents.x, 0.1f, 0));
-        Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center + new Vector3(GetComponent<BoxCollider2D>().bounds.extents.x + 0.05f, 0), new Vector3(0.1f, GetComponent<BoxCollider2D>().bounds.extents.y, 0));
-        Gizmos.DrawLine(airMovementScript.baseMovementScript.mousePosition, airMovementScript.grapplingFirePoint.position);
         if (surroundingsCheckerScript.isFacingRight)
         {
             Gizmos.DrawLine(surroundingsCheckerScript.wallCheck.transform.position, new Vector2(surroundingsCheckerScript.wallCheck.transform.position.x + surroundingsCheckerScript.wallCheckDistance, surroundingsCheckerScript.wallCheck.transform.position.y));
             Gizmos.DrawLine(surroundingsCheckerScript.LedgeCheck.transform.position, new Vector2(surroundingsCheckerScript.LedgeCheck.transform.position.x + surroundingsCheckerScript.wallCheckDistance, surroundingsCheckerScript.LedgeCheck.transform.position.y));
+            Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center + new Vector3(GetComponent<BoxCollider2D>().bounds.extents.x + 0.05f, 0), new Vector3(0.1f, GetComponent<BoxCollider2D>().bounds.extents.y, 0));
         }
         else
         {
             Gizmos.DrawLine(surroundingsCheckerScript.wallCheck.transform.position, new Vector2(surroundingsCheckerScript.wallCheck.transform.position.x - surroundingsCheckerScript.wallCheckDistance, surroundingsCheckerScript.wallCheck.transform.position.y));
             Gizmos.DrawLine(surroundingsCheckerScript.LedgeCheck.transform.position, new Vector2(surroundingsCheckerScript.LedgeCheck.transform.position.x - surroundingsCheckerScript.wallCheckDistance, surroundingsCheckerScript.LedgeCheck.transform.position.y));
+            Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center - new Vector3(GetComponent<BoxCollider2D>().bounds.extents.x + 0.05f, 0), new Vector3(0.1f, GetComponent<BoxCollider2D>().bounds.extents.y, 0));
         }
     }
 }
