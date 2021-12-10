@@ -10,29 +10,29 @@ public class AbilityCooldowns : MonoBehaviour
     internal bool dashReady;
     public float dashCooldown;
     // Start is called before the first frame update
-    void Start()
-    {
-        ApplyDashCooldown();
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        if(!dashReady)
-        {
-            currentDashCooldown += Time.deltaTime;
-        }
-        CheckCooldowns();
-    }
-    private void CheckCooldowns()
-    {
-        if(currentDashCooldown >= dashCooldown)
-        {
-            dashReady = true;
-        }
-    }
-    internal void ApplyDashCooldown()
-    {
-        dashReady = false;
-        currentDashCooldown = 0;
-    }
+    //void Start()
+    //{
+    //    ApplyDashCooldown();
+    //}
+    //// Update is called once per frame
+    //void Update()
+    //{
+    //    if(!dashReady)
+    //    {
+    //        currentDashCooldown += Time.deltaTime;
+    //    }
+    //    CheckCooldowns();
+    //}
+    //private void CheckCooldowns()
+    //{
+    //    if(currentDashCooldown >= dashCooldown)
+    //    {
+    //        dashReady = true;
+    //    }
+    //}
+    //internal void ApplyDashCooldown()
+    //{
+    //    dashReady = false;
+    //    currentDashCooldown = 0;
+    //}
 }

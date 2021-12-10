@@ -75,28 +75,28 @@ public class PlayerMovementAir : MonoBehaviour
         {
             baseMovementScript.animatorScript.animator.speed = 1;
             baseMovementScript.surroundingsCheckerScript.isTouchingChain = false;
-            if (baseMovementScript.position.x != 0)
+            if (baseMovementScript.inputScript.position.x != 0)
             {
-                Jump(baseMovementScript.position.x * jumpForce * 0.75f, jumpForce / 2);
+                Jump(baseMovementScript.inputScript.position.x * jumpForce * 0.75f, jumpForce / 2);
             }
             else
             {
                 baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.fall;
             }
         }
-        else if (baseMovementScript.position.x != 0)
+        else if (baseMovementScript.inputScript.position.x != 0)
         {
             baseMovementScript.FlipCharacter();
         }
-        else if (baseMovementScript.position.y == 0)
+        else if (baseMovementScript.inputScript.position.y == 0)
         {
             baseMovementScript.animatorScript.animator.speed = 0;
         }
         else
         {
             baseMovementScript.animatorScript.animator.speed = 1;
-            transform.position = new Vector2(transform.position.x, transform.position.y + (baseMovementScript.position.y * 0.06f));
-            if (baseMovementScript.surroundingsCheckerScript.isTouchingCeiling && baseMovementScript.position.y > 0)
+            transform.position = new Vector2(transform.position.x, transform.position.y + (baseMovementScript.inputScript.position.y * 0.06f));
+            if (baseMovementScript.surroundingsCheckerScript.isTouchingCeiling && baseMovementScript.inputScript.position.y > 0)
             {
                 float chainOffsetY = baseMovementScript.boxCollider.bounds.extents.y + 1f + baseMovementScript.surroundingsCheckerScript.chainCheckDistance + 0.2f;
                 RaycastHit2D hit = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center + new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y), new Vector3(2 * baseMovementScript.boxCollider.bounds.extents.x, 0.1f, 0), 0f, Vector2.up, chainOffsetY);
@@ -167,7 +167,7 @@ public class PlayerMovementAir : MonoBehaviour
     }
     internal void SetGrapplePoint()
     {
-        Vector3 distanceVector = baseMovementScript.mousePosition - grapplingFirePoint.position;
+        Vector3 distanceVector = baseMovementScript.inputScript.mousePosition - grapplingFirePoint.position;
         RaycastHit2D hit = Physics2D.Raycast(grapplingFirePoint.position, distanceVector.normalized, grappleDistance, grapplableLayers);
         if(hit.collider != null)
         {
@@ -195,6 +195,6 @@ public class PlayerMovementAir : MonoBehaviour
     private void OnDrawGizmos()
     {
         //grapplingHook
-        Gizmos.DrawLine(baseMovementScript.mousePosition, grapplingFirePoint.position);
+        Gizmos.DrawLine(baseMovementScript.inputScript.mousePosition, grapplingFirePoint.position);
     }
 }

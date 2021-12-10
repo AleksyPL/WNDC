@@ -21,6 +21,7 @@ public class PlayerMovementAnimator : MonoBehaviour
             animator.SetBool("LedgeClimbing", false);
             animator.SetBool("LadderClimbing", false);
             animator.SetBool("RopeSwinging", false);
+            animator.SetBool("Dashing", false);
         }
         else if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.jump)
         {
@@ -30,6 +31,7 @@ public class PlayerMovementAnimator : MonoBehaviour
             animator.SetBool("LedgeClimbing", false);
             animator.SetBool("LadderClimbing", false);
             animator.SetBool("RopeSwinging", false);
+            animator.SetBool("Dashing", false);
         }
         else if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.fall)
         {
@@ -39,6 +41,7 @@ public class PlayerMovementAnimator : MonoBehaviour
             animator.SetBool("LedgeClimbing", false);
             animator.SetBool("LadderClimbing", false);
             animator.SetBool("RopeSwinging", false);
+            animator.SetBool("Dashing", false);
         }
         else if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.ledgeClimbing)
         {
@@ -48,6 +51,7 @@ public class PlayerMovementAnimator : MonoBehaviour
             animator.SetBool("LedgeClimbing", true);
             animator.SetBool("LadderClimbing", false);
             animator.SetBool("RopeSwinging", false);
+            animator.SetBool("Dashing", false);
         }
         else if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.chainClimbing)
         {
@@ -57,6 +61,7 @@ public class PlayerMovementAnimator : MonoBehaviour
             animator.SetBool("LedgeClimbing", false);
             animator.SetBool("LadderClimbing", true);
             animator.SetBool("RopeSwinging", false);
+            animator.SetBool("Dashing", false);
         }
         else if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.idle)
         {
@@ -66,6 +71,7 @@ public class PlayerMovementAnimator : MonoBehaviour
             animator.SetBool("LedgeClimbing", false);
             animator.SetBool("LadderClimbing", false);
             animator.SetBool("RopeSwinging", false);
+            animator.SetBool("Dashing", false);
         }
         else if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.ropeGrappling)
         {
@@ -75,6 +81,17 @@ public class PlayerMovementAnimator : MonoBehaviour
             animator.SetBool("LedgeClimbing", false);
             animator.SetBool("LadderClimbing", false);
             animator.SetBool("RopeSwinging", true);
+            animator.SetBool("Dashing", false);
+        }
+        else if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.dash)
+        {
+            animator.SetBool("Moving", false);
+            animator.SetBool("Jumping", false);
+            animator.SetBool("Falling", false);
+            animator.SetBool("LedgeClimbing", false);
+            animator.SetBool("LadderClimbing", false);
+            animator.SetBool("RopeSwinging", false);
+            animator.SetBool("Dashing", true);
         }
     }
 }

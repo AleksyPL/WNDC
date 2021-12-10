@@ -30,11 +30,6 @@ public class PlayerMovementSurroundingsChecker : MonoBehaviour
         isTouchingChain = false;
         isTouchingCeiling = false;
     }
-
-    void Update()
-    {
-        
-    }
     internal void CheckSurroundings()
     {
         isGrounded = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center - new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y - 0.1f), new Vector3(2 * baseMovementScript.boxCollider.bounds.extents.x, 0.1f, 0), 0f, Vector2.down, 0.1f, whatIsGround);
@@ -51,6 +46,12 @@ public class PlayerMovementSurroundingsChecker : MonoBehaviour
                 baseMovementScript.canFlip = false;
                 baseMovementScript.canGrapple = false;
                 baseMovementScript.canDash = false;
+            }
+            else if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.dash)
+            {
+                baseMovementScript.canJump = false;
+                baseMovementScript.canFlip = false;
+                baseMovementScript.canGrapple = false;
             }
             else
             {
@@ -94,6 +95,12 @@ public class PlayerMovementSurroundingsChecker : MonoBehaviour
                 baseMovementScript.canDash = false;
                 baseMovementScript.myRigidBody.gravityScale = 0;
                 baseMovementScript.myRigidBody.velocity = Vector2.zero;
+            }
+            else if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.dash)
+            {
+                baseMovementScript.canJump = false;
+                baseMovementScript.canFlip = false;
+                baseMovementScript.canGrapple = false;
             }
             if (isTouchingWall && !isTouchingLedge && !baseMovementScript.airMovementScript.ledgeDetected && !isTouchingChain && !baseMovementScript.airMovementScript.isGrappling)
             {

@@ -23,15 +23,12 @@ public class Player : MonoBehaviour
     [SerializeField]
     internal AbilityCooldowns cooldownScript;
     internal StateMachine currentState;
-    // Start is called before the first frame update
     void Start()
     {
-        //currentState = StateMachine.idle;
-    }
 
-    // Update is called once per frame
+    }
     void Update()
     {
-        
+        Debug.Log(currentState);
     }
 }
