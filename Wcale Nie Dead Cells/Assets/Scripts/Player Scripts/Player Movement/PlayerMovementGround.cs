@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerMovementBase))]
 public class PlayerMovementGround : MonoBehaviour
 {
-    [SerializeField]
-    internal PlayerMovementBase baseMovementScript;
+    private PlayerMovementBase baseMovementScript;
     public float walkSpeed;
     public float slideSpped;
     public float dashSpeed;
@@ -19,6 +19,7 @@ public class PlayerMovementGround : MonoBehaviour
     private bool startCooldown;
     void Start()
     {
+        baseMovementScript = GetComponent<PlayerMovementBase>();
         currentDashTime = 0;
         currentDashCooldown = 0;
         startCooldown = true;
@@ -50,15 +51,14 @@ public class PlayerMovementGround : MonoBehaviour
     }
     internal void Run()
     {
-        baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.walk;
+        baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.running;
         baseMovementScript.myRigidBody.velocity = new Vector2(Mathf.Round(baseMovementScript.inputScript.position.x) * walkSpeed, baseMovementScript.myRigidBody.velocity.y);
-        baseMovementScript.FlipCharacter();
     }
     internal void Dash()
     {
         if(currentDashTime < dashDuration && isDashing)
         {
-            baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.dash;
+            baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.dashing;
             if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
             {
                 baseMovementScript.myRigidBody.velocity = new Vector2(1f * dashSpeed, baseMovementScript.myRigidBody.velocity.y);

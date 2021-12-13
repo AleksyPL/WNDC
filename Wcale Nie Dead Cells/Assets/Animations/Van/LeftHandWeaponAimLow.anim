@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: OneHandedWeaponAimHigh
+  m_Name: LeftHandWeaponAimLow
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -19,7 +19,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 179.596}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
         tangentMode: 0
@@ -29,7 +29,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -45,7 +45,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp/RightArmDown
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp/LeftArmDown
   m_PositionCurves: []
   m_ScaleCurves: []
   m_FloatCurves: []
@@ -58,14 +58,14 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 3065125127
+      path: 4167589248
       attribute: 4
       script: {fileID: 0}
       typeID: 4
       customType: 4
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 2890496856
+      path: 2579626649
       attribute: 4
       script: {fileID: 0}
       typeID: 4
@@ -109,7 +109,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -128,7 +128,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -136,7 +136,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0
+        value: 179.596
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -147,7 +147,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -166,7 +166,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp/RightArmDown
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp/LeftArmDown
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -185,7 +185,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp/RightArmDown
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp/LeftArmDown
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -204,7 +204,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp/RightArmDown
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp/LeftArmDown
     classID: 4
     script: {fileID: 0}
   m_EulerEditorCurves:
@@ -215,7 +215,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp/RightArmDown
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -225,7 +225,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp/RightArmDown
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -235,7 +235,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp/RightArmDown
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -245,7 +245,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp/LeftArmDown
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -255,7 +255,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp/LeftArmDown
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -265,7 +265,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/Spine1/Spine2/Spine3/Spine4/RightArmUp
+    path: Rig/Spine1/Spine2/Spine3/Spine4/LeftArnUp/LeftArmDown
     classID: 4
     script: {fileID: 0}
   m_HasGenericRootTransform: 0

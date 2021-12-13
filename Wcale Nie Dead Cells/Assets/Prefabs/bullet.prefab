@@ -141,9 +141,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3680564830455689931}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ab4868e2112693479ad551a331b63e4, type: 3}
+  m_Script: {fileID: 11500000, guid: 22678c97abf474746b370caa20772071, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1000
-  damage: 0
-  lifeTime: 1
+  doDamage:
+    serializedVersion: 2
+    m_Bits: 0
+  destroyBullet:
+    serializedVersion: 2
+    m_Bits: 256

@@ -6,6 +6,11 @@ public class Bullet : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Vector2 launchDirection;
+    [SerializeField]
+    private LayerMask doDamage;
+    [SerializeField]
+    //private LayerMask destroyBullet;
+
     private float speed;
     private float damage;
     private float lifeTime;
@@ -30,5 +35,13 @@ public class Bullet : MonoBehaviour
         this.speed = newSpeed;
         this.damage = newDamage;
         this.lifeTime = newLifeTime;
+        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, 0);
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.name == "Platforms")
+        {
+            Destroy(gameObject);
+        }
     }
 }
