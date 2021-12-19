@@ -6,7 +6,8 @@ using UnityEngine;
 public class PlayerInventory : MonoBehaviour
 {
     internal Player mainPlayerScript;
-    public Weapon[] weapons;
+    public List<Weapon> weapons;
+    //public Weapon[] weapons;
     private GameObject objectToSpawn;
     private Vector2 placeToSpawnObject;
     private void Start()
@@ -14,7 +15,7 @@ public class PlayerInventory : MonoBehaviour
         mainPlayerScript = GetComponent<Player>();
         objectToSpawn = null;
         placeToSpawnObject = Vector2.zero;
-        Weapon[] weapons = new Weapon[2];
+        //Weapon[] weapons = new Weapon[2];
     }
     public virtual void PickUpObject()
     {
@@ -26,18 +27,18 @@ public class PlayerInventory : MonoBehaviour
     }
     internal void AddWeapon(Weapon newWeapon)
     {
-        if(weapons.Length == 0)
+        if(weapons.Count == 0)
         {
             weapons[0] = newWeapon;
         }
-        else if (weapons.Length == 1 && weapons[0] != newWeapon)
+        else if (weapons.Count== 1 && weapons[0] != newWeapon)
         {
             weapons[1] = newWeapon;
         }
     }
     internal void SwapWeapons(Weapon newWeapon)
     {
-        if(weapons.Length == 2 && weapons[1] != null)
+        if(weapons.Count == 2 && weapons[1] != null)
         {
             weapons[1] = weapons[0];
             weapons[0] = newWeapon;

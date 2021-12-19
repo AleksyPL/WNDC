@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     internal PlayerMovementBase baseMovementScript;
     internal PlayerInventory inventory;
     internal StateMachine currentState;
-    private void Start()
+    private void OnEnable()
     {
         baseMovementScript = GetComponent<PlayerMovementBase>();
         inventory = GetComponent<PlayerInventory>();

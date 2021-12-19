@@ -6,9 +6,10 @@ public class Bullet : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Vector2 launchDirection;
-    [SerializeField]
-    private LayerMask doDamage;
-    [SerializeField]
+    private TrailRenderer trailRenderer;
+    //[SerializeField]
+    //private LayerMask doDamage;
+    //[SerializeField]
     //private LayerMask destroyBullet;
 
     private float speed;
@@ -19,6 +20,7 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        trailRenderer = GetComponent<TrailRenderer>();
     }
     void Update()
     {
@@ -36,6 +38,7 @@ public class Bullet : MonoBehaviour
         this.damage = newDamage;
         this.lifeTime = newLifeTime;
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, 0);
+        //this.trailRenderer.time = newLifeTime;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

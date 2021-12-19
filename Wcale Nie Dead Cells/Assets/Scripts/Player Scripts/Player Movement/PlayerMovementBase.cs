@@ -20,11 +20,11 @@ public class PlayerMovementBase : MonoBehaviour
     internal PlayerMovementShooting shootingScript;
     internal Rigidbody2D myRigidBody;
     internal BoxCollider2D boxCollider;
-    internal bool canMove;
-    internal bool canFlip;
+    internal bool canMoveSideways;
+    internal bool canMoveUpAndDown;
     internal bool canJump;
     internal bool canGrapple;
-    internal bool canDash;
+    //internal bool canDash;
     internal bool canClimbLedge;
     internal bool canClimbChain;
     internal bool canHoldGun;
@@ -41,11 +41,10 @@ public class PlayerMovementBase : MonoBehaviour
         shootingScript = GetComponent<PlayerMovementShooting>();
         myRigidBody = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
-        canFlip = true;
-        canMove = false;
+        canMoveSideways = false;
         canJump = false;
         canGrapple = false;
-        canDash = false;
+        //canDash = false;
         canClimbLedge = false;
         canClimbChain = false;
         canHoldGun = true;
@@ -61,24 +60,40 @@ public class PlayerMovementBase : MonoBehaviour
     }
     private void MoveCharacter()
     {
-        if(canMove)
+        if(canMoveSideways || canMoveUpAndDown)
         {
             if (mainPlayerScript.currentState != Player.StateMachine.ropeGrappling && canGrapple && !airMovementScript.isGrappling && inputScript.RPM_hold)
             {
                 airMovementScript.SetGrapplePoint();
             }
-            else if (mainPlayerScript.currentState == Player.StateMachine.ropeGrappling && !inputScript.RPM_hold)
+            else if (airMovementScript.isGrappling && !inputScript.RPM_hold)
             {
                 airMovementScript.DetachGrapplingHook();
                 airMovementScript.Falling();
             }
-            else if (Input.GetButton("Jump") && canJump && !surroundingsCheckerScript.isTouchingChain && airMovementScript.numberOfAvailableJumps > 0)
+            else if (Input.GetButton("Jump"))
             {
-                mainPlayerScript.currentState = Player.StateMachine.jumping;
-                airMovementScript.Jump(myRigidBody.velocity.x, airMovementScript.jumpForce);
-                airMovementScript.numberOfAvailableJumps--;
+                if (surroundingsCheckerScript.isGrounded)
+                {
+                    airMovementScript.Jump(myRigidBody.velocity.x, airMovementScript.jumpForce);
+                }
+                else
+                {
+                    if(surroundingsCheckerScript.isTouchingWallLeft)
+                    {
+                        airMovementScript.Jump(5, airMovementScript.jumpForce);
+                    }
+                    else if (surroundingsCheckerScript.isTouchingWallRight)
+                    {
+                        airMovementScript.Jump(-5, airMovementScript.jumpForce);
+                    }
+                    else
+                    {
+                        airMovementScript.Jump(myRigidBody.velocity.x, airMovementScript.jumpForce);
+                    }
+                }
             }
-            else if (inputScript.scrollwheel != 0 && mainPlayerScript.inventory.weapons.Length == 2 && mainPlayerScript.inventory.weapons[0] != mainPlayerScript.inventory.weapons[1])
+            else if (inputScript.scrollwheel != 0 && mainPlayerScript.inventory.weapons.Count == 2 && mainPlayerScript.inventory.weapons[0] != mainPlayerScript.inventory.weapons[1])
             {
                 mainPlayerScript.inventory.SwapWeapons(mainPlayerScript.inventory.weapons[1]);
             }
@@ -93,6 +108,19 @@ public class PlayerMovementBase : MonoBehaviour
                 {
                     groundMovementScript.Run();
                 }
+                if (mainPlayerScript.currentState != Player.StateMachine.chainClimbing && canClimbChain)
+                {
+                    if (inputScript.position.y > 0 && surroundingsCheckerScript.isTouchingChain)
+                    {
+                        airMovementScript.AttachToTheChain(0.35f, 0.2f, 0.1f);
+                        mainPlayerScript.currentState = Player.StateMachine.chainClimbing;
+                    }
+                    else if (inputScript.position.y < 0 && !surroundingsCheckerScript.isTouchingChain)
+                    {
+                        airMovementScript.AttachToTheChain(0.35f, -(boxCollider.bounds.size.y + 1f - surroundingsCheckerScript.chainCheckDistance + 0.1f), 1.1f);
+                        mainPlayerScript.currentState = Player.StateMachine.chainClimbing;
+                    }
+                }
             }
             else if (!surroundingsCheckerScript.isGrounded)
             {
@@ -100,47 +128,24 @@ public class PlayerMovementBase : MonoBehaviour
                 {
                     airMovementScript.Falling();
                 }
-                if(mainPlayerScript.currentState == Player.StateMachine.jumping || mainPlayerScript.currentState == Player.StateMachine.falling)
+                if (surroundingsCheckerScript.isTouchingChain && mainPlayerScript.currentState == Player.StateMachine.chainClimbing)
                 {
-                    airMovementScript.ControlCharacterInAir();
+                    airMovementScript.ChainClimb();
                 }
             }
         }
         //if(canMove)
-        //{
-        //    if (mainPlayerScript.currentState != Player.StateMachine.ropeGrappling && canGrapple && !airMovementScript.isGrappling && inputScript.RPM_hold)
-        //    {
-        //        airMovementScript.SetGrapplePoint();
-        //    }
-        //    else if (mainPlayerScript.currentState == Player.StateMachine.ropeGrappling && !inputScript.RPM_hold)
-        //    {
-        //        airMovementScript.DetachGrapplingHook();
-        //        airMovementScript.Falling();
-        //    }
+        //
         //    else if (inputScript.shiftHold && canDash && groundMovementScript.dashReady && mainPlayerScript.currentState != Player.StateMachine.ropeGrappling && mainPlayerScript.currentState != Player.StateMachine.chainClimbing && mainPlayerScript.currentState != Player.StateMachine.ledgeClimbing)
         //    {
         //        groundMovementScript.Dash();
         //    }
         //    else if (surroundingsCheckerScript.isGrounded)
         //    {
-        //        if (inputScript.position == Vector3.zero && mainPlayerScript.currentState != Player.StateMachine.ledgeClimbing && mainPlayerScript.currentState != Player.StateMachine.ropeGrappling)
-        //        {
-        //            mainPlayerScript.currentState = Player.StateMachine.idle;
-        //            myRigidBody.velocity = Vector2.zero;
-        //        }
-        //        if (inputScript.position.x != 0 && mainPlayerScript.currentState != Player.StateMachine.dash && !groundMovementScript.isDashing)
-        //        {
-        //            groundMovementScript.Run();
-        //        }
-        //        if (Input.GetButton("Jump") && canJump && !surroundingsCheckerScript.isTouchingChain)
-        //        {
-        //            mainPlayerScript.currentState = Player.StateMachine.jump;
-        //            airMovementScript.Jump(myRigidBody.velocity.x, airMovementScript.jumpForce);
-        //        }
         //        //if (position.y < 0 && !surroundingsCheckerScript.isTouchingChain)
         //        //{
         //        //    mainPlayerScript.currentState = Player.StateMachine.slide;
-        //        //    //TODO Slideasd
+        //        //    //TODO Slide
         //        //}
         //        if (mainPlayerScript.currentState != Player.StateMachine.chainClimbing && canClimbChain)
         //        {
@@ -158,10 +163,6 @@ public class PlayerMovementBase : MonoBehaviour
         //    }
         //    else if (!surroundingsCheckerScript.isGrounded)
         //    {
-        //        if (mainPlayerScript.currentState != Player.StateMachine.jump && mainPlayerScript.currentState != Player.StateMachine.ledgeClimbing && mainPlayerScript.currentState != Player.StateMachine.chainClimbing && mainPlayerScript.currentState != Player.StateMachine.ropeGrappling && mainPlayerScript.currentState != Player.StateMachine.dash)
-        //        {
-        //            airMovementScript.Falling();
-        //        }
         //        if (mainPlayerScript.currentState != Player.StateMachine.ledgeClimbing && mainPlayerScript.currentState != Player.StateMachine.chainClimbing && (mainPlayerScript.currentState == Player.StateMachine.jump || mainPlayerScript.currentState == Player.StateMachine.fall))
         //        {
         //            if (surroundingsCheckerScript.isTouchingChain && inputScript.position.y != 0)
@@ -190,19 +191,6 @@ public class PlayerMovementBase : MonoBehaviour
     {
         Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center + new Vector3(0, GetComponent<BoxCollider2D>().bounds.extents.y + 0.05f), new Vector3(2 * GetComponent<BoxCollider2D>().bounds.extents.x, 0.1f, 0));
         Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center - new Vector3(0, GetComponent<BoxCollider2D>().bounds.extents.y + 0.05f), new Vector3(2 * GetComponent<BoxCollider2D>().bounds.extents.x, 0.1f, 0));
-        //if (surroundingsCheckerScript.isFacingRight)
-        //{
-        //    Gizmos.DrawLine(surroundingsCheckerScript.wallCheck.transform.position, new Vector2(surroundingsCheckerScript.wallCheck.transform.position.x + surroundingsCheckerScript.wallCheckDistance, surroundingsCheckerScript.wallCheck.transform.position.y));
-        //    Gizmos.DrawLine(surroundingsCheckerScript.LedgeCheck.transform.position, new Vector2(surroundingsCheckerScript.LedgeCheck.transform.position.x + surroundingsCheckerScript.wallCheckDistance, surroundingsCheckerScript.LedgeCheck.transform.position.y));
-        //    Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center + new Vector3(GetComponent<BoxCollider2D>().bounds.extents.x + 0.05f, 0), new Vector3(0.1f, GetComponent<BoxCollider2D>().bounds.extents.y, 0));
-        //}
-        //else
-        //{
-        //    Gizmos.DrawLine(surroundingsCheckerScript.wallCheck.transform.position, new Vector2(surroundingsCheckerScript.wallCheck.transform.position.x - surroundingsCheckerScript.wallCheckDistance, surroundingsCheckerScript.wallCheck.transform.position.y));
-        //    Gizmos.DrawLine(surroundingsCheckerScript.LedgeCheck.transform.position, new Vector2(surroundingsCheckerScript.LedgeCheck.transform.position.x - surroundingsCheckerScript.wallCheckDistance, surroundingsCheckerScript.LedgeCheck.transform.position.y));
-        //    Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center - new Vector3(GetComponent<BoxCollider2D>().bounds.extents.x + 0.05f, 0), new Vector3(0.1f, GetComponent<BoxCollider2D>().bounds.extents.y, 0));
-        //}
-        //grapplingHook
-        //Gizmos.DrawLine(inputScript.mousePosition, airMovementScript.grapplingFirePoint.position);
+        
     }
 }

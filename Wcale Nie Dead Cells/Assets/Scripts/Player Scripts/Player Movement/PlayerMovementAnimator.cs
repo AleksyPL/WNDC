@@ -6,12 +6,17 @@ using UnityEngine;
 public class PlayerMovementAnimator : MonoBehaviour
 {
     private PlayerMovementBase baseMovementScript;
+    private GameObject arm;
     internal Animator animator;
-    //public GameObject AimingCircle;
     void Start()
     {
         baseMovementScript = GetComponent<PlayerMovementBase>();
+        arm = GameObject.Find("RightArmUp");
         animator = GetComponent<Animator>();
+    }
+    private void Update()
+    {
+        AimRightHand();
     }
     internal void AnimateCharacter()
     {
@@ -59,5 +64,19 @@ public class PlayerMovementAnimator : MonoBehaviour
             animator.SetBool("Jumping", false);
             animator.SetBool("Falling", true);
         }
+    }
+    private void AimRightHand()
+    {
+        Vector3 perendicular = arm.transform.position - baseMovementScript.inputScript.mousePosition;
+        Quaternion value = Quaternion.LookRotation(Vector3.forward, perendicular);
+        if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
+        {
+            value *= Quaternion.Euler(0, 0, -90f);
+        }
+        else
+        {
+            value *= Quaternion.Euler(0, 180, -90f);
+        }
+        arm.transform.rotation = value;
     }
 }

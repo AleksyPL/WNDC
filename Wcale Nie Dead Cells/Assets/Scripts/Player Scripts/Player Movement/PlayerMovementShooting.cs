@@ -5,18 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovementBase))]
 public class PlayerMovementShooting : MonoBehaviour
 {
-    private PlayerMovementBase baseMovementScript;
-    public GameObject weaponHolder;
-    public GameObject smallWeaponHolster;
-    public GameObject bigWeaponHolster;
-    //public Weapon equipedWeapon;
-    //public Weapon secondWeapon;
+    internal PlayerMovementBase baseMovementScript;
     public GameObject bulletPrefab;
+    private GameObject weaponHolder;
+    private GameObject smallWeaponHolster;
+    private GameObject bigWeaponHolster;
     private GameObject shootingPoint;
     private GameObject emptyCaseEjectorPoint;
     private GameObject muzzleFlashPoint;
-    private GameObject hand1Object;
-    private GameObject hand2Object;
     private bool isShooting;
     private bool reloadWeapon;
     private bool isReloading;
@@ -33,39 +29,26 @@ public class PlayerMovementShooting : MonoBehaviour
         rateOfFireCounter = 0;
         muzzleFlashLifeTime = 0.15f;
         muzzleFalshLifeTimeCounter = 0;
+        weaponHolder = GameObject.Find("WeaponHolder").gameObject;
+        smallWeaponHolster = GameObject.Find("SmallWeaponHolster").gameObject;
+        bigWeaponHolster = GameObject.Find("BigWeaponHolster").gameObject;
         shootingPoint = weaponHolder.transform.Find("ShootingPoint").gameObject;
         emptyCaseEjectorPoint = weaponHolder.transform.Find("EmptyCaseEjectorPoint").gameObject;
         muzzleFlashPoint = weaponHolder.transform.Find("MuzzleFlashPoint").gameObject;
-        hand1Object = weaponHolder.transform.Find("Hand1").gameObject;
-        hand2Object = weaponHolder.transform.Find("Hand2").gameObject;
         EquipWeapon();
     }
     internal void EquipWeapon()
     {
-        hand1Object.GetComponent<SpriteRenderer>().enabled = false;
-        hand2Object.GetComponent<SpriteRenderer>().enabled = false;
         isReloading = false;
         reloadTimeCounter = 0;
         weaponHolder.transform.localPosition = new Vector3(baseMovementScript.mainPlayerScript.inventory.weapons[0].weaponHolderOffset.x, baseMovementScript.mainPlayerScript.inventory.weapons[0].weaponHolderOffset.y, 0);
         shootingPoint.transform.localPosition = new Vector3(baseMovementScript.mainPlayerScript.inventory.weapons[0].shootingPointOffset.x, baseMovementScript.mainPlayerScript.inventory.weapons[0].shootingPointOffset.y, 0);
         emptyCaseEjectorPoint.transform.localPosition = new Vector3(baseMovementScript.mainPlayerScript.inventory.weapons[0].emptyCaseEjectorPointOffset.x, baseMovementScript.mainPlayerScript.inventory.weapons[0].emptyCaseEjectorPointOffset.y, 0);
-        muzzleFlashPoint.transform.localPosition = new Vector3(baseMovementScript.mainPlayerScript.inventory.weapons[0].muzzleFlashPointOffset.x, baseMovementScript.mainPlayerScript.inventory.weapons[0].muzzleFlashPointOffset.y, 0);
+        muzzleFlashPoint.transform.localPosition = new Vector3(baseMovementScript.mainPlayerScript.inventory.weapons[0].shootingPointOffset.x, baseMovementScript.mainPlayerScript.inventory.weapons[0].shootingPointOffset.y, 0);
         weaponHolder.GetComponent<SpriteRenderer>().sprite = baseMovementScript.mainPlayerScript.inventory.weapons[0].weaponSprite;
         emptyCaseEjectorPoint.GetComponent<ParticleSystemRenderer>().material = baseMovementScript.mainPlayerScript.inventory.weapons[0].bulletCaseMaterial;
         currentMagazine = baseMovementScript.mainPlayerScript.inventory.weapons[0].magazineSize;
-        if (baseMovementScript.mainPlayerScript.inventory.weapons[0].isOneHandedWeapon)
-        {
-            hand1Object.GetComponent<SpriteRenderer>().enabled = true;
-            hand1Object.transform.localPosition = baseMovementScript.mainPlayerScript.inventory.weapons[0].Hand1Position;
-        }
-        else
-        {
-            hand1Object.GetComponent<SpriteRenderer>().enabled = true;
-            hand2Object.GetComponent<SpriteRenderer>().enabled = true;
-            hand1Object.transform.localPosition = baseMovementScript.mainPlayerScript.inventory.weapons[0].Hand1Position;
-            hand2Object.transform.localPosition = baseMovementScript.mainPlayerScript.inventory.weapons[0].Hand2Position;
-        }
-        if (baseMovementScript.mainPlayerScript.inventory.weapons.Length == 2 && baseMovementScript.mainPlayerScript.inventory.weapons[1] != null)
+        if (baseMovementScript.mainPlayerScript.inventory.weapons.Count == 2 && baseMovementScript.mainPlayerScript.inventory.weapons[1] != null)
         {
             if (baseMovementScript.mainPlayerScript.inventory.weapons[1].isOneHandedWeapon)
             {
@@ -108,19 +91,19 @@ public class PlayerMovementShooting : MonoBehaviour
             }
         }
     }
-    private void RotateGun()
-    {
-        Vector3 difference = baseMovementScript.inputScript.mousePosition - weaponHolder.transform.position;
-        float rotation = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
-        if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
-        {
-            weaponHolder.transform.rotation = Quaternion.Euler(0, 0, rotation);
-        }
-        else
-        {
-            weaponHolder.transform.rotation = Quaternion.Euler(180, 0, -rotation);
-        }
-    }
+    //private void RotateGun()
+    //{
+    //    Vector3 difference = baseMovementScript.inputScript.mousePosition - weaponHolder.transform.position;
+    //    float rotation = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+    //    if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
+    //    {
+    //        weaponHolder.transform.rotation = Quaternion.Euler(0, 0, rotation);
+    //    }
+    //    else
+    //    {
+    //        weaponHolder.transform.rotation = Quaternion.Euler(180, 0, -rotation);
+    //    }
+    //}
     private void ControlRateOfFire()
     {
         if (rateOfFireCounter < baseMovementScript.mainPlayerScript.inventory.weapons[0].rateOfFire)
@@ -135,7 +118,7 @@ public class PlayerMovementShooting : MonoBehaviour
     }
     void Update()
     {
-        RotateGun();
+        //EquipWeapon();
         isShooting = Input.GetButton("Fire1");
         reloadWeapon = Input.GetButton("Reload");
         if (baseMovementScript.canShoot && isShooting && !isReloading && !reloadWeapon)

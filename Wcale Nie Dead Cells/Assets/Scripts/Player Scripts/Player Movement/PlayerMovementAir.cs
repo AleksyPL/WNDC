@@ -7,7 +7,6 @@ using UnityEngine;
 [RequireComponent(typeof(SpringJoint2D))]
 public class PlayerMovementAir : MonoBehaviour
 {
-    
     private PlayerMovementBase baseMovementScript;
     private PlayerMovementGrapplingRope grappleRopeScript;
     private SpringJoint2D springJoint;
@@ -20,8 +19,12 @@ public class PlayerMovementAir : MonoBehaviour
     public Transform grapplingFirePoint;
     public LayerMask grapplableLayers;
     public float grappleDistance;
-    readonly internal int numberOfJumps = 2;
-    internal int numberOfAvailableJumps;
+    internal bool airJumpReady;
+    private bool airJumpUsed;
+    private float airJumpCooldown;
+    private float airJumpCooldownTimer;
+    private bool wallJumpRightUsed;
+    private bool wallJumpLeftUsed;
 
     void Start()
     {
@@ -30,16 +33,42 @@ public class PlayerMovementAir : MonoBehaviour
         springJoint = GetComponent<SpringJoint2D>();
         grappleRopeScript.enabled = false;
         isGrappling = false;
-        numberOfAvailableJumps = numberOfJumps;
+        airJumpReady = false;
+        airJumpUsed = false;
+        airJumpCooldown = 0.5f;
+        airJumpCooldownTimer = 0;
+        wallJumpLeftUsed = false;
+        wallJumpRightUsed = false;
     }
 
     void Update()
     {
-        LimitAirSpeed();   
+        LimitAirSpeed();
+        ControlCharacterInAir();
+        if(airJumpCooldownTimer < airJumpCooldown && !baseMovementScript.surroundingsCheckerScript.isGrounded && !airJumpUsed && !airJumpReady)
+        {
+            airJumpCooldownTimer += Time.deltaTime;
+        }
+        else if(airJumpCooldownTimer >= airJumpCooldown && !baseMovementScript.surroundingsCheckerScript.isGrounded && !airJumpUsed && !airJumpReady)
+        {
+            airJumpReady = true;
+            airJumpCooldownTimer = 0;
+        }
+        else if (baseMovementScript.surroundingsCheckerScript.isTouchingWallLeft || baseMovementScript.surroundingsCheckerScript.isTouchingWallRight)
+        {
+            airJumpReady = false;
+        }
+        if (baseMovementScript.surroundingsCheckerScript.isGrounded)
+        {
+            airJumpReady = false;
+            airJumpUsed = false;
+            wallJumpLeftUsed = false;
+            wallJumpRightUsed = false;
+        }
     }
     internal void LimitAirSpeed()
     {
-        if (!baseMovementScript.surroundingsCheckerScript.isGrounded)
+        if (!baseMovementScript.surroundingsCheckerScript.isGrounded && (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.jumping || baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.falling))
         {
             if (baseMovementScript.myRigidBody.velocity.x > airControlSpeedLimit)
             {
@@ -61,15 +90,33 @@ public class PlayerMovementAir : MonoBehaviour
     }
     internal void ControlCharacterInAir()
     {
-        if (!baseMovementScript.surroundingsCheckerScript.isTouchingWall && baseMovementScript.mainPlayerScript.currentState != Player.StateMachine.ropeGrappling)
+        if (((!baseMovementScript.surroundingsCheckerScript.isTouchingWallRight && baseMovementScript.inputScript.position.x > 0) || (!baseMovementScript.surroundingsCheckerScript.isTouchingWallLeft && baseMovementScript.inputScript.position.x < 0)) && baseMovementScript.mainPlayerScript.currentState != Player.StateMachine.chainClimbing && baseMovementScript.mainPlayerScript.currentState != Player.StateMachine.ropeGrappling)
         {
-            if (baseMovementScript.surroundingsCheckerScript.isFacingRight && baseMovementScript.myRigidBody.velocity.x <= 3f || !baseMovementScript.surroundingsCheckerScript.isFacingRight && baseMovementScript.myRigidBody.velocity.x >= -3f)
+            if (baseMovementScript.myRigidBody.velocity.x < 1f && baseMovementScript.myRigidBody.velocity.x > -1f)
             {
-                baseMovementScript.myRigidBody.AddForce(new Vector2(baseMovementScript.inputScript.position.x * 2f * airControlSpeed, 0));
+                if (baseMovementScript.inputScript.position.x > 0)
+                {
+                    baseMovementScript.myRigidBody.AddForce(new Vector2(baseMovementScript.inputScript.position.x * airControlSpeed + 10, 0));
+                }
+                else if (baseMovementScript.inputScript.position.x < 0)
+                {
+                    baseMovementScript.myRigidBody.AddForce(new Vector2(baseMovementScript.inputScript.position.x * airControlSpeed - 10, 0));
+                }
             }
-            if ((baseMovementScript.surroundingsCheckerScript.isFacingRight && baseMovementScript.myRigidBody.velocity.x > 3f && baseMovementScript.inputScript.position.x < 0) || (baseMovementScript.inputScript.position.x > 0 && !baseMovementScript.surroundingsCheckerScript.isFacingRight && baseMovementScript.myRigidBody.velocity.x < -3f))
+            if (baseMovementScript.myRigidBody.velocity.x < 3f && baseMovementScript.myRigidBody.velocity.x > -3f)
             {
-                baseMovementScript.myRigidBody.AddForce(new Vector2(baseMovementScript.inputScript.position.x * 20f * airControlSpeed, 0));
+                if (baseMovementScript.inputScript.position.x > 0)
+                {
+                    baseMovementScript.myRigidBody.AddForce(new Vector2(baseMovementScript.inputScript.position.x * airControlSpeed + 5, 0));
+                }
+                else if (baseMovementScript.inputScript.position.x < 0)
+                {
+                    baseMovementScript.myRigidBody.AddForce(new Vector2(baseMovementScript.inputScript.position.x * airControlSpeed - 5, 0));
+                }
+            }
+            if (baseMovementScript.myRigidBody.velocity.x > 3f || baseMovementScript.myRigidBody.velocity.x < -3f)
+            {
+                baseMovementScript.myRigidBody.AddForce(new Vector2(baseMovementScript.inputScript.position.x * airControlSpeed, 0));
             }
         }
     }
@@ -77,65 +124,97 @@ public class PlayerMovementAir : MonoBehaviour
     {
         baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.falling;
     }
-    internal void Jump(float vectorX, float vectorY)
+    internal void Jump(float x, float y)
     {
-        baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.jumping;
-        baseMovementScript.myRigidBody.AddForce(new Vector2(vectorX, vectorY));
-        //baseMovementScript.myRigidBody.velocity = new Vector2(vectorX, vectorY);
+        if(baseMovementScript.canJump)
+        {
+            baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.jumping;
+            baseMovementScript.myRigidBody.velocity = new Vector2(x, y);
+        }
+        else if (!baseMovementScript.surroundingsCheckerScript.isGrounded && baseMovementScript.surroundingsCheckerScript.isTouchingWallLeft && !wallJumpLeftUsed)
+        {
+            baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.jumping;
+            baseMovementScript.myRigidBody.velocity = new Vector2(x, y);
+            wallJumpLeftUsed = true;
+            if(wallJumpRightUsed)
+            {
+                wallJumpRightUsed = false;
+            }
+            //baseMovementScript.myRigidBody.velocity = new Vector2(-jumpForce * 0.75f, jumpForce);
+        }
+        else if (!baseMovementScript.surroundingsCheckerScript.isGrounded && baseMovementScript.surroundingsCheckerScript.isTouchingWallRight && !wallJumpRightUsed)
+        {
+            baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.jumping;
+            baseMovementScript.myRigidBody.velocity = new Vector2(x, y);
+            wallJumpRightUsed = true;
+            if(wallJumpLeftUsed)
+            {
+                wallJumpLeftUsed = false;
+            }
+            //baseMovementScript.myRigidBody.velocity = new Vector2(jumpForce * 0.75f, jumpForce);
+        }
+        else if (airJumpReady && !airJumpUsed && !baseMovementScript.surroundingsCheckerScript.isGrounded && !baseMovementScript.canJump 
+            && baseMovementScript.mainPlayerScript.currentState != Player.StateMachine.ropeGrappling && !baseMovementScript.surroundingsCheckerScript.isTouchingWallLeft && !baseMovementScript.surroundingsCheckerScript.isTouchingWallRight)
+        {
+            baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.jumping;
+            baseMovementScript.myRigidBody.velocity = new Vector2(x, y);
+            airJumpReady = false;
+            airJumpUsed = true;
+        }
     }
     internal void ChainClimb()
     {
-        //if (Input.GetButton("Jump"))
-        //{
-        //    baseMovementScript.animatorScript.animator.speed = 1;
-        //    baseMovementScript.surroundingsCheckerScript.isTouchingChain = false;
-        //    if (baseMovementScript.inputScript.position.x != 0)
-        //    {
-        //        Jump(baseMovementScript.inputScript.position.x * jumpForce * 0.75f, jumpForce / 2);
-        //    }
-        //    else
-        //    {
-        //        baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.fall;
-        //    }
-        //}
-        //else if (baseMovementScript.inputScript.position.x != 0)
-        //{
-        //    //baseMovementScript.mainPlayerScript.FlipCharacter();
-        //}
-        //else if (baseMovementScript.inputScript.position.y == 0)
-        //{
-        //    baseMovementScript.animatorScript.animator.speed = 0;
-        //}
-        //else
-        //{
-        //    baseMovementScript.animatorScript.animator.speed = 1;
-        //    transform.position = new Vector2(transform.position.x, transform.position.y + (baseMovementScript.inputScript.position.y * 0.06f));
-        //    if (baseMovementScript.surroundingsCheckerScript.isTouchingCeiling && baseMovementScript.inputScript.position.y > 0)
-        //    {
-        //        float chainOffsetY = baseMovementScript.boxCollider.bounds.extents.y + 1f + baseMovementScript.surroundingsCheckerScript.chainCheckDistance + 0.2f;
-        //        RaycastHit2D hit = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center + new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y), new Vector3(2 * baseMovementScript.boxCollider.bounds.extents.x, 0.1f, 0), 0f, Vector2.up, chainOffsetY);
-        //        if (hit.collider.gameObject.layer != baseMovementScript.surroundingsCheckerScript.whatIsGround)
-        //        {
-        //            transform.position = new Vector2(transform.position.x, transform.position.y + chainOffsetY);
-        //            baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.idle;
-        //        }
-        //    }
-        //}
+        if (Input.GetButton("Jump"))
+        {
+            baseMovementScript.animatorScript.animator.speed = 1;
+            baseMovementScript.surroundingsCheckerScript.isTouchingChain = false;
+            if (baseMovementScript.inputScript.position.x != 0)
+            {
+                Jump(baseMovementScript.inputScript.position.x * jumpForce * 0.75f, jumpForce / 2);
+            }
+            else
+            {
+                baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.falling;
+            }
+        }
+        else if (baseMovementScript.inputScript.position.x != 0)
+        {
+            //baseMovementScript.mainPlayerScript.FlipCharacter();
+        }
+        else if (baseMovementScript.inputScript.position.y == 0)
+        {
+            baseMovementScript.animatorScript.animator.speed = 0;
+        }
+        else
+        {
+            baseMovementScript.animatorScript.animator.speed = 1;
+            transform.position = new Vector2(transform.position.x, transform.position.y + (baseMovementScript.inputScript.position.y * 0.06f));
+            if (baseMovementScript.surroundingsCheckerScript.isTouchingCeiling && baseMovementScript.inputScript.position.y > 0)
+            {
+                float chainOffsetY = baseMovementScript.boxCollider.bounds.extents.y + 1f + baseMovementScript.surroundingsCheckerScript.chainCheckDistance + 0.2f;
+                RaycastHit2D hit = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center + new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y), new Vector3(2 * baseMovementScript.boxCollider.bounds.extents.x, 0.1f, 0), 0f, Vector2.up, chainOffsetY);
+                if (hit.collider.gameObject.layer != baseMovementScript.surroundingsCheckerScript.whatIsGround)
+                {
+                    transform.position = new Vector2(transform.position.x, transform.position.y + chainOffsetY);
+                    baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.idle;
+                }
+            }
+        }
     }
     public void AttachToTheChain(float chainOffsetX, float chainOffsetY, float raycastOffsetY)
     {
-        //RaycastHit2D hit = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center - new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y - 0.1f), new Vector3(2 * baseMovementScript.boxCollider.bounds.extents.x, 0.1f, 0), 0f, Vector2.down, raycastOffsetY, baseMovementScript.surroundingsCheckerScript.whatIsChain);
-        //if(hit.collider !=null)
-        //{
-        //    if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
-        //    {
-        //        transform.position = new Vector2(hit.collider.bounds.center.x - chainOffsetX, transform.position.y + chainOffsetY);
-        //    }
-        //    else
-        //    {
-        //        transform.position = new Vector2(hit.collider.bounds.center.x + chainOffsetX, transform.position.y + chainOffsetY);
-        //    }
-        //}
+        RaycastHit2D hit = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center - new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y - 0.1f), new Vector3(2 * baseMovementScript.boxCollider.bounds.extents.x, 0.1f, 0), 0f, Vector2.down, raycastOffsetY, baseMovementScript.surroundingsCheckerScript.whatIsChain);
+        if (hit.collider != null)
+        {
+            if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
+            {
+                transform.position = new Vector2(hit.collider.bounds.center.x - chainOffsetX, transform.position.y + chainOffsetY);
+            }
+            else
+            {
+                transform.position = new Vector2(hit.collider.bounds.center.x + chainOffsetX, transform.position.y + chainOffsetY);
+            }
+        }
     }
     internal void SetGrapplePoint()
     {
