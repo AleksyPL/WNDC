@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerMovementAir))]
 public class PlayerMovementGrapplingRope : MonoBehaviour
 {
     public LineRenderer lineRenderer;
-    [SerializeField]
     internal PlayerMovementAir airMovementScript;
-    private void OnEnable()
+    void OnEnable()
     {
-        lineRenderer.enabled = true;
+        airMovementScript = GetComponent<PlayerMovementAir>();
     }
-    private void OnDisable()
+    void OnDisable()
     {
         lineRenderer.positionCount = 0;
         lineRenderer.enabled = false;
@@ -19,11 +19,12 @@ public class PlayerMovementGrapplingRope : MonoBehaviour
     }
     private void DrawRope()
     {
+        lineRenderer.enabled = true;
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, airMovementScript.grapplingFirePoint.position);
         lineRenderer.SetPosition(1, airMovementScript.grapplePoint);
     }
-    private void FixedUpdate()
+    void Update()
     {
         DrawRope();
     }

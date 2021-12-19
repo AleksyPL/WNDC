@@ -2,36 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[RequireComponent(typeof(PlayerMovementBase))]
+[RequireComponent(typeof(PlayerInventory))]
 public class Player : MonoBehaviour
 {
     public enum StateMachine
     {
         idle,
-        walk,
-        attack,
-        fall,
-        jump,
-        ledgeClimbing,
+        running,
+        //attack,
+        falling,
+        jumping,
+        //ledgeClimbing,
         chainClimbing,
         ropeGrappling,
-        slide,
-        dash,
-        dead
+        sliding,
+        dashing,
+        //dead
     }
-    [SerializeField]
     internal PlayerMovementBase baseMovementScript;
-    [SerializeField]
-    internal AbilityCooldowns cooldownScript;
+    internal PlayerInventory inventory;
     internal StateMachine currentState;
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
-        //currentState = StateMachine.idle;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        baseMovementScript = GetComponent<PlayerMovementBase>();
+        inventory = GetComponent<PlayerInventory>();
     }
 }
