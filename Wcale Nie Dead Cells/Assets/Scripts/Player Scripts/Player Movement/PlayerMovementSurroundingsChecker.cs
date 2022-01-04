@@ -9,12 +9,14 @@ public class PlayerMovementSurroundingsChecker : MonoBehaviour
     public LayerMask whatIsBackground;
     public LayerMask whatIsGround;
     public LayerMask whatIsChain;
+    public LayerMask whatIsElevator;
     internal bool isFacingRight;
     internal bool isGrounded;
     internal bool isTouchingWallRight;
     internal bool isTouchingWallLeft;
     internal bool isTouchingChain;
     internal bool isTouchingCeiling;
+    internal bool isTouchingElevator;
     public float wallCheckDistance;
     public float chainCheckDistance;
     public float ceilingCheckDistance;
@@ -39,6 +41,7 @@ public class PlayerMovementSurroundingsChecker : MonoBehaviour
         isTouchingChain = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center - new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y - 0.1f), new Vector3(baseMovementScript.boxCollider.bounds.extents.x, 0.1f, 0), 0f, Vector2.down, 0.1f, whatIsChain);
         isTouchingWallLeft = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center - new Vector3(baseMovementScript.boxCollider.bounds.extents.x - 0.1f,0), new Vector3(0.1f, 2 * baseMovementScript.boxCollider.bounds.extents.y,0), 0f, Vector2.left, 0.1f, whatIsGround);
         isTouchingWallRight = Physics2D.BoxCast(baseMovementScript.boxCollider.bounds.center + new Vector3(baseMovementScript.boxCollider.bounds.extents.x - 0.1f, 0), new Vector3(0.1f, 2 * baseMovementScript.boxCollider.bounds.extents.y), 0f, Vector2.right, 0.1f, whatIsGround);
+        isTouchingElevator = Physics2D.Raycast(baseMovementScript.boxCollider.bounds.center - new Vector3(0, baseMovementScript.boxCollider.bounds.extents.y), Vector2.down, 0.1f, whatIsElevator);
         if (isGrounded)
         {
 

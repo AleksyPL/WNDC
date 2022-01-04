@@ -17,8 +17,8 @@ TagManager:
   - Chain
   - Background
   - Player
-  - PickUpObject
-  - 
+  - Destroyable
+  - Elevator
   - 
   - 
   - 

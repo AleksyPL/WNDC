@@ -6,12 +6,6 @@ using UnityEngine;
 public class Weapon : ScriptableObject
 {
     public Sprite weaponSprite;
-    public Sprite muzzleFlashSprite;
-    public Material bulletCaseMaterial;
-    public Vector2 weaponHolderOffset;
-    public Vector2 shootingPointOffset;
-    public Vector2 emptyCaseEjectorPointOffset;
-    //public Vector2 muzzleFlashPointOffset;
     public bool isOneHandedWeapon;
     public float numberOfProjectilesPerShot;
     public float spreadOfMultiProjectileWeapons;

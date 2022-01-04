@@ -15,16 +15,20 @@ public class PlayerMovementAir : MonoBehaviour
     internal Vector2 grapplePoint;
     public float airControlSpeedLimit;
     public float airControlSpeed;
-    public float jumpForce;
+    public float verticalJumpForce;
+    public float horizontalJumpForce;
     public Transform grapplingFirePoint;
     public LayerMask grapplableLayers;
     public float grappleDistance;
-    internal bool airJumpReady;
+    private bool airJumpReady;
     private bool airJumpUsed;
     private float airJumpCooldown;
     private float airJumpCooldownTimer;
+    private bool wallJumpReady;
     private bool wallJumpRightUsed;
     private bool wallJumpLeftUsed;
+    private float wallJumpCooldown;
+    private float wallJumpCooldownTimer;
 
     void Start()
     {
@@ -37,6 +41,9 @@ public class PlayerMovementAir : MonoBehaviour
         airJumpUsed = false;
         airJumpCooldown = 0.5f;
         airJumpCooldownTimer = 0;
+        wallJumpCooldown = 0.5f;
+        wallJumpCooldownTimer = 0;
+        wallJumpReady = false;
         wallJumpLeftUsed = false;
         wallJumpRightUsed = false;
     }
@@ -58,10 +65,20 @@ public class PlayerMovementAir : MonoBehaviour
         {
             airJumpReady = false;
         }
+        if(wallJumpCooldownTimer < wallJumpCooldown && !baseMovementScript.surroundingsCheckerScript.isGrounded && !wallJumpReady && ((wallJumpLeftUsed && !wallJumpRightUsed) || (!wallJumpLeftUsed && !wallJumpRightUsed) || (!wallJumpLeftUsed && wallJumpRightUsed)))
+        {
+            wallJumpCooldownTimer += Time.deltaTime;
+        }
+        else if (wallJumpCooldownTimer >= wallJumpCooldown && !baseMovementScript.surroundingsCheckerScript.isGrounded && !wallJumpReady && ((wallJumpLeftUsed && !wallJumpRightUsed) || (!wallJumpLeftUsed && !wallJumpRightUsed) || (!wallJumpLeftUsed && wallJumpRightUsed)))
+        {
+            wallJumpReady = true;
+            wallJumpCooldownTimer = 0;
+        }
         if (baseMovementScript.surroundingsCheckerScript.isGrounded)
         {
             airJumpReady = false;
             airJumpUsed = false;
+            wallJumpReady = false;
             wallJumpLeftUsed = false;
             wallJumpRightUsed = false;
         }
@@ -124,40 +141,42 @@ public class PlayerMovementAir : MonoBehaviour
     {
         baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.falling;
     }
-    internal void Jump(float x, float y)
+    internal void Jump()
     {
-        if(baseMovementScript.canJump)
+        //regular jump
+        if(baseMovementScript.canJump && baseMovementScript.surroundingsCheckerScript.isGrounded)
         {
             baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.jumping;
-            baseMovementScript.myRigidBody.velocity = new Vector2(x, y);
+            baseMovementScript.myRigidBody.velocity = new Vector2(baseMovementScript.myRigidBody.velocity.x, verticalJumpForce);
         }
-        else if (!baseMovementScript.surroundingsCheckerScript.isGrounded && baseMovementScript.surroundingsCheckerScript.isTouchingWallLeft && !wallJumpLeftUsed)
+        //left wall jump
+        else if (!baseMovementScript.surroundingsCheckerScript.isGrounded && baseMovementScript.surroundingsCheckerScript.isTouchingWallLeft && !wallJumpLeftUsed && wallJumpReady)
         {
             baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.jumping;
-            baseMovementScript.myRigidBody.velocity = new Vector2(x, y);
+            baseMovementScript.myRigidBody.velocity = new Vector2(horizontalJumpForce, verticalJumpForce);
             wallJumpLeftUsed = true;
             if(wallJumpRightUsed)
             {
                 wallJumpRightUsed = false;
             }
-            //baseMovementScript.myRigidBody.velocity = new Vector2(-jumpForce * 0.75f, jumpForce);
         }
-        else if (!baseMovementScript.surroundingsCheckerScript.isGrounded && baseMovementScript.surroundingsCheckerScript.isTouchingWallRight && !wallJumpRightUsed)
+        //right wall jump
+        else if (!baseMovementScript.surroundingsCheckerScript.isGrounded && baseMovementScript.surroundingsCheckerScript.isTouchingWallRight && !wallJumpRightUsed && wallJumpReady)
         {
             baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.jumping;
-            baseMovementScript.myRigidBody.velocity = new Vector2(x, y);
+            baseMovementScript.myRigidBody.velocity = new Vector2(-horizontalJumpForce, verticalJumpForce);
             wallJumpRightUsed = true;
             if(wallJumpLeftUsed)
             {
                 wallJumpLeftUsed = false;
             }
-            //baseMovementScript.myRigidBody.velocity = new Vector2(jumpForce * 0.75f, jumpForce);
         }
+        //air jump
         else if (airJumpReady && !airJumpUsed && !baseMovementScript.surroundingsCheckerScript.isGrounded && !baseMovementScript.canJump 
             && baseMovementScript.mainPlayerScript.currentState != Player.StateMachine.ropeGrappling && !baseMovementScript.surroundingsCheckerScript.isTouchingWallLeft && !baseMovementScript.surroundingsCheckerScript.isTouchingWallRight)
         {
             baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.jumping;
-            baseMovementScript.myRigidBody.velocity = new Vector2(x, y);
+            baseMovementScript.myRigidBody.velocity = new Vector2(baseMovementScript.myRigidBody.velocity.x, verticalJumpForce);
             airJumpReady = false;
             airJumpUsed = true;
         }
@@ -166,11 +185,11 @@ public class PlayerMovementAir : MonoBehaviour
     {
         if (Input.GetButton("Jump"))
         {
-            baseMovementScript.animatorScript.animator.speed = 1;
+            //baseMovementScript.animatorScript.animator.speed = 1;
             baseMovementScript.surroundingsCheckerScript.isTouchingChain = false;
             if (baseMovementScript.inputScript.position.x != 0)
             {
-                Jump(baseMovementScript.inputScript.position.x * jumpForce * 0.75f, jumpForce / 2);
+                //Jump(baseMovementScript.inputScript.position.x * horizontalJumpForce * 0.75f, verticalJumpForce / 2);
             }
             else
             {
@@ -183,11 +202,11 @@ public class PlayerMovementAir : MonoBehaviour
         }
         else if (baseMovementScript.inputScript.position.y == 0)
         {
-            baseMovementScript.animatorScript.animator.speed = 0;
+            //baseMovementScript.animatorScript.animator.speed = 0;
         }
         else
         {
-            baseMovementScript.animatorScript.animator.speed = 1;
+            //baseMovementScript.animatorScript.animator.speed = 1;
             transform.position = new Vector2(transform.position.x, transform.position.y + (baseMovementScript.inputScript.position.y * 0.06f));
             if (baseMovementScript.surroundingsCheckerScript.isTouchingCeiling && baseMovementScript.inputScript.position.y > 0)
             {

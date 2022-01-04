@@ -13,12 +13,17 @@ public class PlayerMovementInputManager : MonoBehaviour
     internal bool RPM_hold;
     internal bool shiftHold;
     internal float scrollwheel;
+    internal bool spacePressed;
+    internal bool ePresses;
+
     void Start()
     {
         baseMovementScript = GetComponent<PlayerMovementBase>();
         LPM_hold = false;
         RPM_hold = false;
         shiftHold = false;
+        spacePressed = false;
+        ePresses = false;
     }
     internal void GetInputs()
     {
@@ -30,6 +35,8 @@ public class PlayerMovementInputManager : MonoBehaviour
         LPM_hold = Input.GetButton("Fire1");
         RPM_hold = Input.GetButton("Fire2");
         shiftHold = Input.GetButton("Fire3");
+        spacePressed = Input.GetButtonDown("Jump");
+        ePresses = Input.GetButtonDown("Interact");
     }
     internal void FlipCharacter()
     {

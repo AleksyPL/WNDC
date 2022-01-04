@@ -71,27 +71,9 @@ public class PlayerMovementBase : MonoBehaviour
                 airMovementScript.DetachGrapplingHook();
                 airMovementScript.Falling();
             }
-            else if (Input.GetButton("Jump"))
+            else if (inputScript.spacePressed)
             {
-                if (surroundingsCheckerScript.isGrounded)
-                {
-                    airMovementScript.Jump(myRigidBody.velocity.x, airMovementScript.jumpForce);
-                }
-                else
-                {
-                    if(surroundingsCheckerScript.isTouchingWallLeft)
-                    {
-                        airMovementScript.Jump(5, airMovementScript.jumpForce);
-                    }
-                    else if (surroundingsCheckerScript.isTouchingWallRight)
-                    {
-                        airMovementScript.Jump(-5, airMovementScript.jumpForce);
-                    }
-                    else
-                    {
-                        airMovementScript.Jump(myRigidBody.velocity.x, airMovementScript.jumpForce);
-                    }
-                }
+                airMovementScript.Jump();
             }
             else if (inputScript.scrollwheel != 0 && mainPlayerScript.inventory.weapons.Count == 2 && mainPlayerScript.inventory.weapons[0] != mainPlayerScript.inventory.weapons[1])
             {
@@ -191,6 +173,7 @@ public class PlayerMovementBase : MonoBehaviour
     {
         Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center + new Vector3(0, GetComponent<BoxCollider2D>().bounds.extents.y + 0.05f), new Vector3(2 * GetComponent<BoxCollider2D>().bounds.extents.x, 0.1f, 0));
         Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center - new Vector3(0, GetComponent<BoxCollider2D>().bounds.extents.y + 0.05f), new Vector3(2 * GetComponent<BoxCollider2D>().bounds.extents.x, 0.1f, 0));
-        
+        Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center + new Vector3(GetComponent<BoxCollider2D>().bounds.extents.x + 0.05f, 0), new Vector3(0.1f, 2 * GetComponent<BoxCollider2D>().bounds.extents.y, 0));
+        Gizmos.DrawWireCube(GetComponent<BoxCollider2D>().bounds.center - new Vector3(GetComponent<BoxCollider2D>().bounds.extents.x + 0.05f, 0), new Vector3(0.1f, 2 * GetComponent<BoxCollider2D>().bounds.extents.y, 0));
     }
 }

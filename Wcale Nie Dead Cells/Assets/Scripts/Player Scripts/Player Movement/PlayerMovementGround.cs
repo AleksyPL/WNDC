@@ -53,7 +53,7 @@ public class PlayerMovementGround : MonoBehaviour
     {
         baseMovementScript.mainPlayerScript.currentState = Player.StateMachine.running;
         baseMovementScript.myRigidBody.velocity = new Vector2(Mathf.Round(baseMovementScript.inputScript.position.x) * walkSpeed, baseMovementScript.myRigidBody.velocity.y);
-        Debug.Log("Running");
+        //Debug.Log("Running");
     }
     internal void Dash()
     {
