@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -139,6 +140,16 @@ public class Elevator : Interactable
                     leftSide.GetComponent<LineRenderer>().SetPosition(1, new Vector3(leftSide.transform.position.x, ray1.point.y));
                     rightSide.GetComponent<LineRenderer>().SetPosition(0, new Vector3(rightSide.transform.position.x, ray.point.y));
                     rightSide.GetComponent<LineRenderer>().SetPosition(1, new Vector3(rightSide.transform.position.x, ray1.point.y));
+
+                    //point per one grid cell
+                    //double distance2 = Math.Round(Vector3.Distance(ray.point, ray1.point), 1);
+                    //leftSide.GetComponent<LineRenderer>().positionCount = (int)distance2 + 1;
+                    //rightSide.GetComponent<LineRenderer>().positionCount = (int)distance2 + 1;
+                    //for (int i = 0; i <= distance2; i++)
+                    //{
+                    //    leftSide.GetComponent<LineRenderer>().SetPosition(i, new Vector3(leftSide.transform.position.x, leftSide.transform.position.y + i + 0.5f));
+                    //    rightSide.GetComponent<LineRenderer>().SetPosition(i, new Vector3(rightSide.transform.position.x, rightSide.transform.position.y + i + 0.5f));
+                    //}
                 }
             }
             else
