@@ -17,6 +17,7 @@ public class PlayerMovementSurroundingsChecker : MonoBehaviour
     internal bool isTouchingChain;
     internal bool isTouchingCeiling;
     internal bool isTouchingElevator;
+    internal bool isDead;
     public float wallCheckDistance;
     public float chainCheckDistance;
     public float ceilingCheckDistance;
@@ -31,6 +32,7 @@ public class PlayerMovementSurroundingsChecker : MonoBehaviour
         isTouchingWallLeft = false;
         isTouchingChain = false;
         isTouchingCeiling = false;
+        isDead = false;
         coyoteTime = 0.2f;
         coyoteTimeTimer = 0;
     }
@@ -46,12 +48,12 @@ public class PlayerMovementSurroundingsChecker : MonoBehaviour
         {
 
             baseMovementScript.airMovementScript.ledgeDetected = false;
-            baseMovementScript.myRigidBody.gravityScale = 1;
             baseMovementScript.canMoveSideways = true;
             baseMovementScript.canGrapple = true;
             baseMovementScript.canMoveUpAndDown = true;
             coyoteTimeTimer = 0;
             baseMovementScript.canJump = true;
+            baseMovementScript.myRigidBody.gravityScale = 1;
             if (isTouchingChain)
             {
                 baseMovementScript.canClimbChain = true;

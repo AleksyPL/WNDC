@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: RailGun
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 864a6b429614ecd4dbb0138d7f21b6c5, type: 3}
+  activeFireMode: 4
+  fittingHolster: 1
   isOneHandedWeapon: 0
   numberOfProjectilesPerShot: 1
   spreadOfMultiProjectileWeapons: 0

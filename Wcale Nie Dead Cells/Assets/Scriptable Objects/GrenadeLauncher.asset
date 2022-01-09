@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: GrenadeLauncher
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 348989ebccf67b4448b8e26d425fe920, type: 3}
+  activeFireMode: 0
+  fittingHolster: 1
   isOneHandedWeapon: 0
   numberOfProjectilesPerShot: 1
   spreadOfMultiProjectileWeapons: 0

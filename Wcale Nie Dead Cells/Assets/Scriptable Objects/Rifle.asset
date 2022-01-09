@@ -13,11 +13,8 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 6b2fabd506335984496c668db76d9298, type: 3}
-  muzzleFlashSprite: {fileID: 21300000, guid: 14e627ad6ef231347bb2f31a71be4a13, type: 3}
-  bulletCaseMaterial: {fileID: 2100000, guid: bdb0d73612f498b4cb82acef82f9de2e, type: 2}
-  weaponHolderOffset: {x: 0.84, y: 0.02}
-  shootingPointOffset: {x: 0.5, y: 0.12}
-  emptyCaseEjectorPointOffset: {x: -0.02, y: 0.21}
+  activeFireMode: 1
+  fittingHolster: 1
   isOneHandedWeapon: 0
   numberOfProjectilesPerShot: 1
   spreadOfMultiProjectileWeapons: 0

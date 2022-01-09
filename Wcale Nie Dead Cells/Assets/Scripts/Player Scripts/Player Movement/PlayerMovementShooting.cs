@@ -9,7 +9,9 @@ public class PlayerMovementShooting : MonoBehaviour
     public GameObject bulletPrefab;
     private GameObject uziGameObject;
     private GameObject pistolGameObject;
+    private GameObject burstPistolGameObject;
     private GameObject rifleGameObject;
+    private GameObject augRifleGameObject;
     private GameObject shotgunGameObject;
     private GameObject mp5GameObject;
     private GameObject grenadeLauncherGameObject;
@@ -33,9 +35,13 @@ public class PlayerMovementShooting : MonoBehaviour
         rateOfFireCounter = 0;
         muzzleFlashLifeTime = 0.15f;
         muzzleFalshLifeTimeCounter = 0;
+        activeWeapon = null;
+        enableMuzzleFlash = false;
         uziGameObject = GameObject.Find("Uzi").gameObject;
         pistolGameObject = GameObject.Find("Pistol").gameObject;
+        burstPistolGameObject = GameObject.Find("BurstPistol").gameObject;
         rifleGameObject = GameObject.Find("Rifle").gameObject;
+        augRifleGameObject = GameObject.Find("Aug").gameObject;
         shotgunGameObject = GameObject.Find("Shotgun").gameObject;
         mp5GameObject = GameObject.Find("MP5").gameObject;
         grenadeLauncherGameObject = GameObject.Find("GrenadeLauncher").gameObject;
@@ -61,6 +67,10 @@ public class PlayerMovementShooting : MonoBehaviour
         {
             activeWeapon = rifleGameObject;
         }
+        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].name == "Aug")
+        {
+            activeWeapon = augRifleGameObject;
+        }
         else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].name == "Uzi")
         {
             activeWeapon = uziGameObject;
@@ -68,6 +78,10 @@ public class PlayerMovementShooting : MonoBehaviour
         else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].name == "Pistol")
         {
             activeWeapon = pistolGameObject;
+        }
+        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].name == "BurstPistol")
+        {
+            activeWeapon = burstPistolGameObject;
         }
         else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].name == "MP5")
         {
@@ -154,28 +168,52 @@ public class PlayerMovementShooting : MonoBehaviour
             baseMovementScript.canShoot = true;
         }
     }
+    private void Shoot()
+    {
+        enableMuzzleFlash = true;
+        GameObject muzzleFlashPoint = activeWeapon.transform.Find("MuzzleFlashPoint").gameObject;
+        GameObject emptyCaseEjectorPoint = activeWeapon.transform.Find("EmptyCaseEjectorPoint").gameObject;
+        muzzleFlashPoint.GetComponent<SpriteRenderer>().enabled = true;
+        baseMovementScript.canShoot = false;
+        emptyCaseEjectorPoint.GetComponent<ParticleSystem>().Emit(1);
+        if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
+        {
+            emptyCaseEjectorPoint.transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+        else
+        {
+            emptyCaseEjectorPoint.transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+        if (baseMovementScript.mainPlayerScript.inventory.weapons[0].activeFireMode == Weapon.FireMode.single)
+        {
+            currentMagazine -= 1;
+        }
+        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].activeFireMode == Weapon.FireMode.auto)
+        {
+
+        }
+        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].activeFireMode == Weapon.FireMode.burst)
+        {
+
+        }
+        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].activeFireMode == Weapon.FireMode.multiple)
+        {
+
+        }
+        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].activeFireMode == Weapon.FireMode.laser)
+        {
+
+        }
+    }
     void Update()
     {
         GameObject shootingPoint = activeWeapon.transform.Find("ShootingPoint").gameObject;
-        GameObject emptyCaseEjectorPoint = activeWeapon.transform.Find("EmptyCaseEjectorPoint").gameObject;
         GameObject muzzleFlashPoint = activeWeapon.transform.Find("MuzzleFlashPoint").gameObject;
-        isShooting = Input.GetButton("Fire1");
+        isShooting = Input.GetButtonDown("Fire1");
         reloadWeapon = Input.GetButton("Reload");
         if (baseMovementScript.canShoot && isShooting && !isReloading && !reloadWeapon)
         {
-            enableMuzzleFlash = true;
-            muzzleFlashPoint.GetComponent<SpriteRenderer>().enabled = true;
-            baseMovementScript.canShoot = false;
-            currentMagazine -= 1;
-            if(baseMovementScript.surroundingsCheckerScript.isFacingRight)
-            {
-                emptyCaseEjectorPoint.transform.rotation = Quaternion.Euler(0, 180, 0);
-            }
-            else
-            {
-                emptyCaseEjectorPoint.transform.rotation = Quaternion.Euler(0, 180, 0);
-            }
-            emptyCaseEjectorPoint.GetComponent<ParticleSystem>().Emit(1);
+            Shoot();
             float facingRotation = Mathf.Atan2(shootingPoint.transform.right.y, shootingPoint.transform.right.x) * Mathf.Rad2Deg;
             float startRotation = facingRotation + baseMovementScript.mainPlayerScript.inventory.weapons[0].spreadOfMultiProjectileWeapons / 2f;
             float angleIncrease = baseMovementScript.mainPlayerScript.inventory.weapons[0].spreadOfMultiProjectileWeapons / (float)baseMovementScript.mainPlayerScript.inventory.weapons[0].numberOfProjectilesPerShot - 1f;

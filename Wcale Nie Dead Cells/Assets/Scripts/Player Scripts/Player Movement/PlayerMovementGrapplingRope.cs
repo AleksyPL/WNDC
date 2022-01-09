@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerMovementAir))]
+//[RequireComponent(typeof(PlayerMovementAir))]
 public class PlayerMovementGrapplingRope : MonoBehaviour
 {
     public LineRenderer lineRenderer;
@@ -10,6 +10,7 @@ public class PlayerMovementGrapplingRope : MonoBehaviour
     void OnEnable()
     {
         airMovementScript = GetComponent<PlayerMovementAir>();
+        //lineRenderer = GetComponent<LineRenderer>();
     }
     void OnDisable()
     {

@@ -6,7 +6,7 @@ public class Bullet : Projectile
 {
     void Update()
     {
-        this.rb.velocity = launchDirection * speed * Time.deltaTime;   
+        this.rb.velocity = speed * Time.deltaTime * launchDirection;   
     }
     public void Setup(Vector2 newDirection, float newDamage, float newLifeTime, float newSpeed)
     {

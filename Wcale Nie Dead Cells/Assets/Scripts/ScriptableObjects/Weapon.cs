@@ -6,6 +6,21 @@ using UnityEngine;
 public class Weapon : ScriptableObject
 {
     public Sprite weaponSprite;
+    public enum FireMode
+    {
+        single,
+        auto,
+        burst,
+        multiple,
+        laser
+    }
+    public FireMode activeFireMode;
+    public enum Holster
+    {
+        small,
+        big
+    }
+    public Holster fittingHolster;
     public bool isOneHandedWeapon;
     public float numberOfProjectilesPerShot;
     public float spreadOfMultiProjectileWeapons;
