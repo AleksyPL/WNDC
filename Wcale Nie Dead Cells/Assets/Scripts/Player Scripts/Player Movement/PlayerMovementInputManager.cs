@@ -2,29 +2,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerMovementBase))]
+//[RequireComponent(typeof(PlayerMovementBase))]
 public class PlayerMovementInputManager : MonoBehaviour
 {
     internal PlayerMovementBase baseMovementScript;
     public GameObject cameraGameObject;
-    //public Camera camera;
     internal Vector3 position;
     internal Vector3 mousePosition;
-    internal bool LPM_hold;
-    internal bool RPM_hold;
+    internal bool LMB_pressed;
+    internal bool LMB_hold;
+    internal bool RMB_hold;
     internal bool shiftHold;
     internal float scrollwheel;
     internal bool spacePressed;
+    internal bool rPressed;
     internal bool ePresses;
 
     void Start()
     {
         baseMovementScript = GetComponent<PlayerMovementBase>();
         mousePosition = Vector3.zero;
-        LPM_hold = false;
-        RPM_hold = false;
+        LMB_pressed = false;
+        LMB_hold = false;
+        RMB_hold = false;
         shiftHold = false;
         spacePressed = false;
+        rPressed = false;
         ePresses = false;
     }
     internal void GetInputs()
@@ -33,17 +36,18 @@ public class PlayerMovementInputManager : MonoBehaviour
         position.y = Input.GetAxisRaw("Vertical");
         scrollwheel = Input.GetAxisRaw("Mouse ScrollWheel");
         position.Normalize();
-        //mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
         mousePosition = cameraGameObject.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
-        LPM_hold = Input.GetButton("Fire1");
-        RPM_hold = Input.GetButton("Fire2");
+        LMB_pressed = Input.GetButtonDown("Fire1");
+        LMB_hold = Input.GetButton("Fire1");
+        RMB_hold = Input.GetButton("Fire2");
         shiftHold = Input.GetButton("Fire3");
         spacePressed = Input.GetButtonDown("Jump");
+        rPressed = Input.GetButtonDown("Reload");
         ePresses = Input.GetButtonDown("Interact");
     }
     internal void FlipCharacter()
     {
-        if(!baseMovementScript.surroundingsCheckerScript.isDead)
+        if(baseMovementScript.mainPlayerScript.currentState != Player.StateMachine.dead)
         {
             if ((baseMovementScript.inputScript.mousePosition.x > baseMovementScript.GetComponent<Collider2D>().bounds.center.x && !baseMovementScript.surroundingsCheckerScript.isFacingRight) || (baseMovementScript.inputScript.mousePosition.x < baseMovementScript.GetComponent<Collider2D>().bounds.center.x && baseMovementScript.surroundingsCheckerScript.isFacingRight))
             {

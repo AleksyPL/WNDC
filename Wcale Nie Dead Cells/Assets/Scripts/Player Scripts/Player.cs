@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[RequireComponent(typeof(PlayerMovementBase))]
-[RequireComponent(typeof(PlayerInventory))]
+//[RequireComponent(typeof(PlayerMovementBase))]
+//[RequireComponent(typeof(PlayerInventory))]
 public class Player : MonoBehaviour
 {
     public enum StateMachine
@@ -14,12 +14,11 @@ public class Player : MonoBehaviour
         //attack,
         falling,
         jumping,
-        //ledgeClimbing,
         chainClimbing,
         ropeGrappling,
-        sliding,
+        //sliding,
         dashing,
-        //dead
+        dead
     }
     internal PlayerMovementBase baseMovementScript;
     internal PlayerInventory inventory;

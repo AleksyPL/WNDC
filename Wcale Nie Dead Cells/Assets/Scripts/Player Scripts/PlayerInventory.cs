@@ -2,47 +2,94 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Player))]
+//[RequireComponent(typeof(Player))]
 public class PlayerInventory : MonoBehaviour
 {
     internal Player mainPlayerScript;
+    public List<Weapon> weaponsOrder;
     public List<Weapon> weapons;
-    //public Weapon[] weapons;
-    private GameObject objectToSpawn;
-    private Vector2 placeToSpawnObject;
-    private void Start()
+    public List<int> weaponsAmount;
+    private void OnEnable()
     {
         mainPlayerScript = GetComponent<Player>();
-        objectToSpawn = null;
-        placeToSpawnObject = Vector2.zero;
-        //Weapon[] weapons = new Weapon[2];
+        CheckWeaponsNumbers();
+        SortWeapons();
     }
-    public virtual void PickUpObject()
+    private void CheckWeaponsNumbers()
     {
-        Destroy(gameObject);
-    }
-    public virtual void SpawnPickUpObject()
-    {
-        Instantiate(objectToSpawn, placeToSpawnObject, Quaternion.identity);
-    }
-    internal void AddWeapon(Weapon newWeapon)
-    {
-        if(weapons.Count == 0)
+        if (weapons.Count != 0 && (weaponsAmount.Count < weapons.Count || weaponsAmount.Count > weapons.Count))
         {
-            weapons[0] = newWeapon;
+            weaponsAmount.Clear();
+            for (int i = 0; i < weapons.Count; i++)
+            {
+                weaponsAmount.Add(1);
+            }
         }
-        else if (weapons.Count== 1 && weapons[0] != newWeapon)
+        else if (weaponsAmount.Count == weapons.Count)
         {
-            weapons[1] = newWeapon;
+            for (int i = 0; i < weaponsAmount.Count; i++)
+            {
+                if (weaponsAmount[i] == 0)
+                {
+                    weaponsAmount[i] = 1;
+                }
+                if (weaponsAmount[i] > 2)
+                {
+                    weaponsAmount[i] = 2;
+                }
+                if (weapons[i].DualWeildingShootingStyle == Weapon.DualWeildingShooting.notAvailable && weaponsAmount[i] == 2)
+                {
+                    weaponsAmount[i] = 1;
+                }
+            }
         }
     }
-    internal void SwapWeapons(Weapon newWeapon)
+    private void AddWeapon(Weapon newWeapon)
     {
-        if(weapons.Count == 2 && weapons[1] != null)
+        if(!weapons.Contains(newWeapon))
         {
-            weapons[1] = weapons[0];
-            weapons[0] = newWeapon;
+            weapons.Add(newWeapon);
+            weaponsAmount.Add(1);
+            if (weapons.Count == 1)
+            {
+                mainPlayerScript.baseMovementScript.shootingScript1.SetParents();
+            }
+            SortWeapons();
         }
-        mainPlayerScript.baseMovementScript.shootingScript.EquipWeapon();
+        else
+        {
+            for(int i=0;i<weapons.Count; i++)
+            {
+                if(weapons[i]==newWeapon && weapons[i].DualWeildingShootingStyle != Weapon.DualWeildingShooting.notAvailable && weaponsAmount[i] == 1)
+                {
+                    weaponsAmount[i]++;
+                }
+            }
+        }
+    }
+    private void SortWeapons()
+    {
+        List<Weapon> weaponsTemp = new List<Weapon>();
+        List<int> weaponsAmountTemp = new List<int>();
+        int indexTemp;
+        for (int i = 0; i < weaponsOrder.Count; i++)
+        {
+            if (weapons.Contains(weaponsOrder[i]))
+            {
+                indexTemp = 0;
+                for (int j = 0; j < weapons.Count; j++)
+                {
+                    if (weapons[j] == weaponsOrder[i])
+                    {
+                        indexTemp = j;
+                        break;
+                    }
+                }
+                weaponsTemp.Add(weaponsOrder[i]);
+                weaponsAmountTemp.Add(weaponsAmount[indexTemp]);
+            }
+        }
+        weapons = weaponsTemp;
+        weaponsAmount = weaponsAmountTemp;
     }
 }

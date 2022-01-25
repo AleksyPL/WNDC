@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerMovementBase))]
+//[RequireComponent(typeof(PlayerMovementBase))]
 public class PlayerMovementGround : MonoBehaviour
 {
     private PlayerMovementBase baseMovementScript;

@@ -2,13 +2,13 @@
 using UnityEngine;
 
 
-[RequireComponent(typeof(Player))]
-[RequireComponent(typeof(PlayerMovementAir))]
-[RequireComponent(typeof(PlayerMovementGround))]
-[RequireComponent(typeof(PlayerMovementSurroundingsChecker))]
-[RequireComponent(typeof(PlayerMovementAnimator))]
-[RequireComponent(typeof(PlayerMovementInputManager))]
-[RequireComponent(typeof(PlayerMovementShooting))]
+//[RequireComponent(typeof(Player))]
+//[RequireComponent(typeof(PlayerMovementAir))]
+//[RequireComponent(typeof(PlayerMovementGround))]
+//[RequireComponent(typeof(PlayerMovementSurroundingsChecker))]
+//[RequireComponent(typeof(PlayerMovementAnimator))]
+//[RequireComponent(typeof(PlayerMovementInputManager))]
+//[RequireComponent(typeof(PlayerMovementShooting))]
 public class PlayerMovementBase : MonoBehaviour
 {
     internal Player mainPlayerScript;
@@ -18,6 +18,7 @@ public class PlayerMovementBase : MonoBehaviour
     internal PlayerMovementAnimator animatorScript;
     internal PlayerMovementInputManager inputScript;
     internal PlayerMovementShooting shootingScript;
+    internal PlayerNewShooting shootingScript1;
     internal Rigidbody2D myRigidBody;
     internal BoxCollider2D boxCollider;
     internal bool canMoveSideways;
@@ -30,7 +31,7 @@ public class PlayerMovementBase : MonoBehaviour
     internal bool canHoldGun;
     internal bool canShoot;
 
-    void Start()
+    void OnEnable()
     {
         mainPlayerScript = GetComponent<Player>();
         airMovementScript = GetComponent<PlayerMovementAir>();
@@ -39,6 +40,7 @@ public class PlayerMovementBase : MonoBehaviour
         animatorScript = GetComponent<PlayerMovementAnimator>();
         inputScript = GetComponent<PlayerMovementInputManager>();
         shootingScript = GetComponent<PlayerMovementShooting>();
+        shootingScript1 = GetComponent<PlayerNewShooting>();
         myRigidBody = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         canMoveSideways = false;
@@ -62,11 +64,11 @@ public class PlayerMovementBase : MonoBehaviour
     {
         if(canMoveSideways || canMoveUpAndDown)
         {
-            if (mainPlayerScript.currentState != Player.StateMachine.ropeGrappling && canGrapple && !airMovementScript.isGrappling && inputScript.RPM_hold)
+            if (mainPlayerScript.currentState != Player.StateMachine.ropeGrappling && canGrapple && !airMovementScript.isGrappling && inputScript.RMB_hold)
             {
                 airMovementScript.SetGrapplePoint();
             }
-            else if (airMovementScript.isGrappling && !inputScript.RPM_hold)
+            else if (airMovementScript.isGrappling && !inputScript.RMB_hold)
             {
                 airMovementScript.DetachGrapplingHook();
                 airMovementScript.Falling();
@@ -75,9 +77,9 @@ public class PlayerMovementBase : MonoBehaviour
             {
                 airMovementScript.Jump();
             }
-            else if (inputScript.scrollwheel != 0 && mainPlayerScript.inventory.weapons.Count == 2 && mainPlayerScript.inventory.weapons[0] != mainPlayerScript.inventory.weapons[1])
+            else if (inputScript.scrollwheel != 0)
             {
-                mainPlayerScript.inventory.SwapWeapons(mainPlayerScript.inventory.weapons[1]);
+                shootingScript1.ChangeActiveWeapon();
             }
             else if (surroundingsCheckerScript.isGrounded)
             {

@@ -2,23 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerMovementBase))]
+//[RequireComponent(typeof(PlayerMovementBase))]
 public class PlayerMovementShooting : MonoBehaviour
 {
     internal PlayerMovementBase baseMovementScript;
     public GameObject bulletPrefab;
-    private GameObject uziGameObject;
-    private GameObject pistolGameObject;
-    private GameObject burstPistolGameObject;
-    private GameObject rifleGameObject;
-    private GameObject augRifleGameObject;
-    private GameObject shotgunGameObject;
-    private GameObject mp5GameObject;
-    private GameObject grenadeLauncherGameObject;
-    private GameObject railGunGameObject;
+    public GameObject uziGameObject;
+    public GameObject pistolGameObject;
+    public GameObject burstPistolGameObject;
+    public GameObject akGameObject;
+    public GameObject augRifleGameObject;
+    public GameObject shotgunGameObject;
+    public GameObject mp5GameObject;
+    public GameObject grenadeLauncherGameObject;
+    public GameObject railGunGameObject;
+    public GameObject smallWeaponHolster;
+    public GameObject bigWeaponHolster;
     private GameObject activeWeapon;
-    private GameObject smallWeaponHolster;
-    private GameObject bigWeaponHolster;
     private bool isShooting;
     private bool reloadWeapon;
     private bool isReloading;
@@ -37,17 +37,6 @@ public class PlayerMovementShooting : MonoBehaviour
         muzzleFalshLifeTimeCounter = 0;
         activeWeapon = null;
         enableMuzzleFlash = false;
-        uziGameObject = GameObject.Find("Uzi").gameObject;
-        pistolGameObject = GameObject.Find("Pistol").gameObject;
-        burstPistolGameObject = GameObject.Find("BurstPistol").gameObject;
-        rifleGameObject = GameObject.Find("Rifle").gameObject;
-        augRifleGameObject = GameObject.Find("Aug").gameObject;
-        shotgunGameObject = GameObject.Find("Shotgun").gameObject;
-        mp5GameObject = GameObject.Find("MP5").gameObject;
-        grenadeLauncherGameObject = GameObject.Find("GrenadeLauncher").gameObject;
-        railGunGameObject = GameObject.Find("RailGun").gameObject;
-        smallWeaponHolster = GameObject.Find("SmallWeaponHolster").gameObject;
-        bigWeaponHolster = GameObject.Find("BigWeaponHolster").gameObject;
         EquipWeapon();
     }
     internal void EquipWeapon()
@@ -63,9 +52,9 @@ public class PlayerMovementShooting : MonoBehaviour
         {
             activeWeapon = shotgunGameObject;
         }
-        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].name == "Rifle")
+        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].name == "AK")
         {
-            activeWeapon = rifleGameObject;
+            activeWeapon = akGameObject;
         }
         else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].name == "Aug")
         {
@@ -100,29 +89,29 @@ public class PlayerMovementShooting : MonoBehaviour
             activeWeapon.GetComponent<SpriteRenderer>().enabled = true;
         }
         currentMagazine = baseMovementScript.mainPlayerScript.inventory.weapons[0].magazineSize;
-        if (baseMovementScript.mainPlayerScript.inventory.weapons.Count == 2 && baseMovementScript.mainPlayerScript.inventory.weapons[1] != null)
-        {
-            if (baseMovementScript.mainPlayerScript.inventory.weapons[1].isOneHandedWeapon)
-            {
-                smallWeaponHolster.GetComponent<SpriteRenderer>().sprite = baseMovementScript.mainPlayerScript.inventory.weapons[1].weaponSprite;
-            }
-            else
-            {
-                bigWeaponHolster.GetComponent<SpriteRenderer>().sprite = baseMovementScript.mainPlayerScript.inventory.weapons[1].weaponSprite;
-            }
-            ClearHolsters();
-        }
+        //if (baseMovementScript.mainPlayerScript.inventory.weapons.Count == 2 && baseMovementScript.mainPlayerScript.inventory.weapons[1] != null)
+        //{
+        //    if (baseMovementScript.mainPlayerScript.inventory.weapons[1].isOneHandedWeapon)
+        //    {
+        //        smallWeaponHolster.GetComponent<SpriteRenderer>().sprite = baseMovementScript.mainPlayerScript.inventory.weapons[1].weaponSprite;
+        //    }
+        //    else
+        //    {
+        //        bigWeaponHolster.GetComponent<SpriteRenderer>().sprite = baseMovementScript.mainPlayerScript.inventory.weapons[1].weaponSprite;
+        //    }
+        //    ClearHolsters();
+        //}
     }
     internal void ClearHolsters()
     {
-        if (baseMovementScript.mainPlayerScript.inventory.weapons[0].isOneHandedWeapon && !baseMovementScript.mainPlayerScript.inventory.weapons[1].isOneHandedWeapon)
-        {
-            smallWeaponHolster.GetComponent<SpriteRenderer>().sprite = null;
-        }
-        else if (!baseMovementScript.mainPlayerScript.inventory.weapons[0].isOneHandedWeapon && baseMovementScript.mainPlayerScript.inventory.weapons[1].isOneHandedWeapon)
-        {
-            bigWeaponHolster.GetComponent<SpriteRenderer>().sprite = null;
-        }
+        //if (baseMovementScript.mainPlayerScript.inventory.weapons[0].isOneHandedWeapon && !baseMovementScript.mainPlayerScript.inventory.weapons[1].isOneHandedWeapon)
+        //{
+        //    smallWeaponHolster.GetComponent<SpriteRenderer>().sprite = null;
+        //}
+        //else if (!baseMovementScript.mainPlayerScript.inventory.weapons[0].isOneHandedWeapon && baseMovementScript.mainPlayerScript.inventory.weapons[1].isOneHandedWeapon)
+        //{
+        //    bigWeaponHolster.GetComponent<SpriteRenderer>().sprite = null;
+        //}
     }
     private void ReloadWeapon()
     {
@@ -196,14 +185,6 @@ public class PlayerMovementShooting : MonoBehaviour
         {
 
         }
-        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].activeFireMode == Weapon.FireMode.multiple)
-        {
-
-        }
-        else if (baseMovementScript.mainPlayerScript.inventory.weapons[0].activeFireMode == Weapon.FireMode.laser)
-        {
-
-        }
     }
     void Update()
     {
@@ -213,17 +194,17 @@ public class PlayerMovementShooting : MonoBehaviour
         reloadWeapon = Input.GetButton("Reload");
         if (baseMovementScript.canShoot && isShooting && !isReloading && !reloadWeapon)
         {
-            Shoot();
-            float facingRotation = Mathf.Atan2(shootingPoint.transform.right.y, shootingPoint.transform.right.x) * Mathf.Rad2Deg;
-            float startRotation = facingRotation + baseMovementScript.mainPlayerScript.inventory.weapons[0].spreadOfMultiProjectileWeapons / 2f;
-            float angleIncrease = baseMovementScript.mainPlayerScript.inventory.weapons[0].spreadOfMultiProjectileWeapons / (float)baseMovementScript.mainPlayerScript.inventory.weapons[0].numberOfProjectilesPerShot - 1f;
-            for (int i = 0; i < baseMovementScript.mainPlayerScript.inventory.weapons[0].numberOfProjectilesPerShot; i++)
-            {
-                float tempRotation = startRotation - angleIncrease * i;
-                GameObject myBullet = Instantiate(bulletPrefab, shootingPoint.transform.position, Quaternion.Euler(0f, 0f, tempRotation));
-                myBullet.GetComponent<Bullet>().Setup(new Vector2(Mathf.Cos(tempRotation * Mathf.Deg2Rad), Mathf.Sin(tempRotation * Mathf.Deg2Rad)),
-                baseMovementScript.mainPlayerScript.inventory.weapons[0].damage, baseMovementScript.mainPlayerScript.inventory.weapons[0].bulletLifeTime, baseMovementScript.mainPlayerScript.inventory.weapons[0].bulletSpeed);
-            }
+            //Shoot();
+            //float facingRotation = Mathf.Atan2(shootingPoint.transform.right.y, shootingPoint.transform.right.x) * Mathf.Rad2Deg;
+            //float startRotation = facingRotation + baseMovementScript.mainPlayerScript.inventory.weapons[0].spreadOfMultiProjectileWeapons / 2f;
+            //float angleIncrease = baseMovementScript.mainPlayerScript.inventory.weapons[0].spreadOfMultiProjectileWeapons / (float)baseMovementScript.mainPlayerScript.inventory.weapons[0].numberOfProjectilesPerShot - 1f;
+            //for (int i = 0; i < baseMovementScript.mainPlayerScript.inventory.weapons[0].numberOfProjectilesPerShot; i++)
+            //{
+            //    float tempRotation = startRotation - angleIncrease * i;
+            //    GameObject myBullet = Instantiate(bulletPrefab, shootingPoint.transform.position, Quaternion.Euler(0f, 0f, tempRotation));
+            //    myBullet.GetComponent<Bullet>().Setup(new Vector2(Mathf.Cos(tempRotation * Mathf.Deg2Rad), Mathf.Sin(tempRotation * Mathf.Deg2Rad)),
+            //    baseMovementScript.mainPlayerScript.inventory.weapons[0].damage, baseMovementScript.mainPlayerScript.inventory.weapons[0].bulletLifeTime, baseMovementScript.mainPlayerScript.inventory.weapons[0].bulletSpeed);
+            //}
         }
         else if (baseMovementScript.canShoot && ((reloadWeapon && !isReloading) || isReloading))
         {

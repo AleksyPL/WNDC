@@ -2,37 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerMovementBase))]
+//[RequireComponent(typeof(PlayerMovementBase))]
 public class PlayerMovementAnimator : MonoBehaviour
 {
     private PlayerMovementBase baseMovementScript;
-    private GameObject rightArm;
-    private GameObject leftArm;
-    private GameObject rightArmIKSolver;
-    private GameObject leftArmIKSolver;
-    private GameObject rightLegIKSolver;
-    private GameObject leftLegIKSolver;
-    internal bool aimWithLeftArm;
-    internal bool aimWithRightArm;
+    private Ragdoll ragdollScript;
+    public GameObject rightArm;
+    public GameObject leftArm;
+    public GameObject rightArmIKSolver;
+    public GameObject leftArmIKSolver;
     internal Animator animator;
-    public GameObject[] bonesAndLimbs;
     void Start()
     {
         baseMovementScript = GetComponent<PlayerMovementBase>();
-        rightArm = GameObject.Find("RightArmUp");
-        leftArm = GameObject.Find("LeftArmUp");
-        leftArmIKSolver = GameObject.Find("LeftArmSolver");
-        rightArmIKSolver = GameObject.Find("RightArmSolver");
-        leftLegIKSolver = GameObject.Find("LeftLegSolver");
-        rightLegIKSolver = GameObject.Find("RightLegSolver");
-        aimWithLeftArm = false;
-        aimWithRightArm = true;
         animator = GetComponent<Animator>();
-        ToggleRagdoll(baseMovementScript.surroundingsCheckerScript.isDead);
+        ragdollScript = GetComponent<Ragdoll>();
     }
     private void CheckIKSolversAndAnimationLayers()
     {
-        if(aimWithLeftArm)
+        if(baseMovementScript.shootingScript1.aimWithLeftArm)
         {
             leftArmIKSolver.SetActive(false);
             animator.SetLayerWeight(animator.GetLayerIndex("Left Arm"), 0);
@@ -42,7 +30,7 @@ public class PlayerMovementAnimator : MonoBehaviour
             leftArmIKSolver.SetActive(true);
             animator.SetLayerWeight(animator.GetLayerIndex("Left Arm"), 1);
         }
-        if (aimWithRightArm)
+        if (baseMovementScript.shootingScript1.aimWithRightArm)
         {
             animator.SetLayerWeight(animator.GetLayerIndex("Right Arm"), 0);
             rightArmIKSolver.SetActive(false);
@@ -53,40 +41,15 @@ public class PlayerMovementAnimator : MonoBehaviour
             animator.SetLayerWeight(animator.GetLayerIndex("Right Arm"), 1);
         }  
     }
-    internal void ToggleRagdoll(bool argument)
-    {
-        leftArmIKSolver.SetActive(!argument);
-        rightArmIKSolver.SetActive(!argument);
-        leftLegIKSolver.SetActive(!argument);
-        rightLegIKSolver.SetActive(!argument);
-        baseMovementScript.myRigidBody.simulated = !argument;
-        baseMovementScript.boxCollider.enabled = !argument;
-        animator.enabled = !argument;
-        for (int i = 0; i < bonesAndLimbs.Length; i++)
-        {
-            if(bonesAndLimbs[i].GetComponent<Rigidbody2D>())
-            {
-                bonesAndLimbs[i].GetComponent<Rigidbody2D>().simulated = argument;
-            }
-            if(bonesAndLimbs[i].GetComponent<CapsuleCollider2D>())
-            {
-                bonesAndLimbs[i].GetComponent<CapsuleCollider2D>().enabled = argument;
-            }
-            if(bonesAndLimbs[i].GetComponent<HingeJoint2D>())
-            {
-                bonesAndLimbs[i].GetComponent<HingeJoint2D>().enabled = argument;
-            }
-        }
-    }
     void Update()
     {
         CheckIKSolversAndAnimationLayers();
-        if(aimWithRightArm)
+        if(baseMovementScript.shootingScript1.aimWithRightArm)
             CalculateAiming(rightArm);
-        if(aimWithLeftArm)
+        if (baseMovementScript.shootingScript1.aimWithLeftArm)
             CalculateAiming(leftArm);
-        if (baseMovementScript.surroundingsCheckerScript.isDead)
-            ToggleRagdoll(true);
+        if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.dead)
+            ragdollScript.ToggleRagdoll(true);
     }
     internal void AnimateCharacter()
     {

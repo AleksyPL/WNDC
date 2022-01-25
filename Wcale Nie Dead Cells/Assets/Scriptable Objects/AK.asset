@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd8cc46820d44984b86c52e32d414b2f, type: 3}
+  m_Name: AK
+  m_EditorClassIdentifier: 
+  weaponSprite: {fileID: 21300000, guid: 6b2fabd506335984496c668db76d9298, type: 3}
+  muzzleFlash: {fileID: 8759564418832110411, guid: c0bd83051f4d57b4d83c310150215057, type: 3}
+  activeFireMode: 1
+  activeProjectileMode: 0
+  activeHitDetectionMode: 0
+  activeHolster: 1
+  activeBulletCase: 1
+  localOffsetGrip: {x: 0.882, y: 0.014}
+  localOffsetShootingPoint: {x: 0.5, y: 0.12}
+  localOffsetMuzzleFlashPoint: {x: 0.5, y: 0.12}
+  localOffsetCaseEjector: {x: -0.02, y: 0.21}
+  dualWieldingAvailable: 0
+  damage: 0
+  bulletSpeed: 2300
+  bulletLifeTime: 1
+  rateOfFire: 0.3
+  reloadTime: 1.5
+  magazineSize: 30
+  projectilePrefab: {fileID: 3680564830455689931, guid: 443a5fc6f70593045803e00a7cff9700, type: 3}
+  numberOfProjectilesPerShot: 1
+  spreadOfMultiProjectileWeapons: 0
+  numberOfShotsInBurst: 1
+  rateOfFireInBurst: 0

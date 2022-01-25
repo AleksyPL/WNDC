@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd8cc46820d44984b86c52e32d414b2f, type: 3}
+  m_Name: Knife
+  m_EditorClassIdentifier: 
+  weaponSprite: {fileID: 21300000, guid: 0a25a0406586b5b49983e6abb830e6ee, type: 3}
+  muzzleFlash: {fileID: 0}
+  activeWeaponType: 1
+  activeFireMode: 1
+  activeProjectileMode: 0
+  activeHitDetectionMode: 0
+  activeHolster: 0
+  activeBulletCase: 0
+  DualWeildingShootingStyle: 2
+  localOffsetGrip: {x: 0.743, y: -0.018}
+  localOffsetShootingPoint: {x: 0, y: 0}
+  localOffsetMuzzleFlashPoint: {x: 0, y: 0}
+  localOffsetCaseEjector: {x: 0, y: 0}
+  damage: 10
+  bulletSpeed: 0
+  bulletLifeTime: 0
+  rateOfFire: 0
+  reloadTime: 0
+  magazineSize: 0
+  projectilePrefab: {fileID: 0}
+  numberOfProjectilesPerShot: 0
+  spreadOfMultiProjectileWeapons: 0
+  numberOfShotsInBurst: 0
+  rateOfFireInBurst: 0

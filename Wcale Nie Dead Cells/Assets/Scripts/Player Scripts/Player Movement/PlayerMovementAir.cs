@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerMovementBase))]
-[RequireComponent(typeof(PlayerMovementGrapplingRope))]
-[RequireComponent(typeof(SpringJoint2D))]
+//[RequireComponent(typeof(PlayerMovementBase))]
+//[RequireComponent(typeof(PlayerMovementGrapplingRope))]
+//[RequireComponent(typeof(SpringJoint2D))]
 public class PlayerMovementAir : MonoBehaviour
 {
     private PlayerMovementBase baseMovementScript;
