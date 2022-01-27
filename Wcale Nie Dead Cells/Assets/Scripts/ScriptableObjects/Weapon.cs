@@ -31,6 +31,11 @@ public class Weapon : ScriptableObject
         projectile,
         hitScan
     }
+    public enum HitscanPenetrationMode
+    {
+        firstHit,
+        fullPenetration
+    }
     public enum FittingHolster
     {
         small,
@@ -54,6 +59,7 @@ public class Weapon : ScriptableObject
     public FireMode activeFireMode;
     public ProjectileMode activeProjectileMode;
     public HitDetectionMode activeHitDetectionMode;
+    public HitscanPenetrationMode activeHitscanPenetrationMode;
     public FittingHolster activeHolster;
     public AmmoType activeBulletCase;
     public DualWeildingShooting DualWeildingShootingStyle;

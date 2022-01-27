@@ -46636,8 +46636,8 @@ MonoBehaviour:
   - {fileID: 1381706488}
   - {fileID: 861314084}
   m_Bounds:
-    m_Center: {x: -1.101576, y: 0.5784915, z: 0}
-    m_Extent: {x: 0.33384028, y: 1.4124768, z: 0}
+    m_Center: {x: -1.1015875, y: 0.5784915, z: 0}
+    m_Extent: {x: 0.33382875, y: 1.4124768, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
 --- !u!114 &780902155
@@ -67617,8 +67617,8 @@ MonoBehaviour:
   - {fileID: 1295367318}
   - {fileID: 1678449443}
   m_Bounds:
-    m_Center: {x: -1.1015763, y: 0.5784915, z: 0}
-    m_Extent: {x: 0.33383986, y: 1.4124768, z: 0}
+    m_Center: {x: -1.1015877, y: 0.5784915, z: 0}
+    m_Extent: {x: 0.33382857, y: 1.4124768, z: 0}
   m_UseBatching: 1
   m_AlwaysUpdate: 1
 --- !u!114 &1104832315
@@ -68007,7 +68007,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1284847082}
-  m_LocalRotation: {x: 0, y: 0, z: -0.99992603, w: 0.01216473}
+  m_LocalRotation: {x: 0, y: 0, z: -0.99992615, w: 0.012154509}
   m_LocalPosition: {x: -0.018, y: -0.233, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -68120,7 +68120,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0.5999, y: 0.009999976}
+  m_ConnectedAnchor: {x: 0.59989977, y: 0.010000006}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -68507,7 +68507,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0.59989995, y: 0.010000177}
+  m_ConnectedAnchor: {x: 0.59989977, y: 0.010000108}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -110099,7 +110099,7 @@ HingeJoint2D:
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: 0.41899976, y: 0.004999974}
+  m_ConnectedAnchor: {x: 0.41899964, y: 0.004999986}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -110541,7 +110541,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2017664761}
-  m_LocalRotation: {x: 0, y: 0, z: -0.99992603, w: 0.012164627}
+  m_LocalRotation: {x: 0, y: 0, z: -0.99992615, w: 0.012154405}
   m_LocalPosition: {x: -0.018, y: -0.233, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -111239,6 +111239,22 @@ MonoBehaviour:
   leftHandWeaponHolder: {fileID: 1873563497}
   rightHand: {fileID: 1933509238}
   leftHand: {fileID: 2061901029}
+  platformsLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  elevatorsLayerMask:
+    serializedVersion: 2
+    m_Bits: 8192
+  destroyableLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
+  enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 16384
+  deadEnemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 32768
+  bloodParticlesPrefab: {fileID: 6873355935780043820, guid: 099bd12bbd1e5b642974c4545159fae4, type: 3}
 --- !u!1 &2078732193
 GameObject:
   m_ObjectHideFlags: 0

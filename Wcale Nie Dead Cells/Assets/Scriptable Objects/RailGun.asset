@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 864a6b429614ecd4dbb0138d7f21b6c5, type: 3}
   muzzleFlash: {fileID: 8759564418832110411, guid: b51740c77996ba144bec5a5287931b95, type: 3}
+  activeWeaponType: 0
   activeFireMode: 0
   activeProjectileMode: 3
   activeHitDetectionMode: 1
+  activeHitscanPenetrationMode: 1
   activeHolster: 1
   activeBulletCase: 3
   DualWeildingShootingStyle: 0
@@ -26,11 +28,11 @@ MonoBehaviour:
   localOffsetCaseEjector: {x: -0.28, y: 0.21}
   damage: 0
   bulletSpeed: 1750
-  bulletLifeTime: 1.2
+  bulletLifeTime: 0.2
   rateOfFire: 0
   reloadTime: 2.5
   magazineSize: 1
-  projectilePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 746666786868027589, guid: 2157e627101854b4d87891fb155dc204, type: 3}
   numberOfProjectilesPerShot: 1
   spreadOfMultiProjectileWeapons: 0
   numberOfShotsInBurst: 1
