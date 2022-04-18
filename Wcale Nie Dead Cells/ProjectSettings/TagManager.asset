@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
+  - Elevator
+  - Chain
+  - Projectile
   layers:
   - Default
   - TransparentFX
@@ -14,14 +17,14 @@ TagManager:
   - UI
   - 
   - 
-  - Ground
-  - Chain
-  - Background
+  - NonInteractablePlatforms
+  - InteractablePlatforms
   - Player
-  - Destroyable
-  - Elevator
   - Enemy
-  - DeadEnemy
+  - Destroyable
+  - DestroyedElements
+  - 
+  - 
   - 
   - 
   - 

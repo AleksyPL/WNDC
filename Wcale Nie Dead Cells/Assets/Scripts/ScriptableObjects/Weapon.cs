@@ -64,6 +64,7 @@ public class Weapon : ScriptableObject
     public AmmoType activeBulletCase;
     public DualWeildingShooting DualWeildingShootingStyle;
     public Vector2 localOffsetGrip;
+    public Quaternion localGripRotation;
     public Vector2 localOffsetShootingPoint;
     public Vector2 localOffsetMuzzleFlashPoint;
     public Vector2 localOffsetCaseEjector;
@@ -77,7 +78,7 @@ public class Weapon : ScriptableObject
     public int magazineSize;
     public GameObject projectilePrefab;
     [Header("Shotgun Only")]
-    public float numberOfProjectilesPerShot;
+    public int numberOfProjectilesPerShot;
     public float spreadOfMultiProjectileWeapons;
     [Header("Burst Only")]
     public int numberOfShotsInBurst;

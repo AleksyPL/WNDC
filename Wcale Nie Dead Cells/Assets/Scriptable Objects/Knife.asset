@@ -18,10 +18,12 @@ MonoBehaviour:
   activeFireMode: 1
   activeProjectileMode: 0
   activeHitDetectionMode: 0
+  activeHitscanPenetrationMode: 0
   activeHolster: 0
   activeBulletCase: 0
   DualWeildingShootingStyle: 2
   localOffsetGrip: {x: 0.743, y: -0.018}
+  localGripRotation: {x: 0, y: 0, z: 0, w: 0}
   localOffsetShootingPoint: {x: 0, y: 0}
   localOffsetMuzzleFlashPoint: {x: 0, y: 0}
   localOffsetCaseEjector: {x: 0, y: 0}

@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerMovementSurroundingsChecker : MonoBehaviour
 {
     internal PlayerMovementBase baseMovementScript;
-    public LayerMask whatIsBackground;
+    //public LayerMask whatIsBackground;
     public LayerMask whatIsGround;
     public LayerMask whatIsChain;
     public LayerMask whatIsElevator;

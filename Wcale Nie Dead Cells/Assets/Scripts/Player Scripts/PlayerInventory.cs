@@ -52,7 +52,7 @@ public class PlayerInventory : MonoBehaviour
             weaponsAmount.Add(1);
             if (weapons.Count == 1)
             {
-                mainPlayerScript.baseMovementScript.shootingScript1.SetParents();
+                mainPlayerScript.baseMovementScript.shootingScript.SetParents();
             }
             SortWeapons();
         }

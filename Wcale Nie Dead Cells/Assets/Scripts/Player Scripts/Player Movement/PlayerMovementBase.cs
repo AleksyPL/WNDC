@@ -17,8 +17,7 @@ public class PlayerMovementBase : MonoBehaviour
     internal PlayerMovementSurroundingsChecker surroundingsCheckerScript;
     internal PlayerMovementAnimator animatorScript;
     internal PlayerMovementInputManager inputScript;
-    internal PlayerMovementShooting shootingScript;
-    internal PlayerNewShooting shootingScript1;
+    internal PlayerNewShooting shootingScript;
     internal Rigidbody2D myRigidBody;
     internal BoxCollider2D boxCollider;
     internal bool canMoveSideways;
@@ -39,8 +38,7 @@ public class PlayerMovementBase : MonoBehaviour
         surroundingsCheckerScript = GetComponent<PlayerMovementSurroundingsChecker>();
         animatorScript = GetComponent<PlayerMovementAnimator>();
         inputScript = GetComponent<PlayerMovementInputManager>();
-        shootingScript = GetComponent<PlayerMovementShooting>();
-        shootingScript1 = GetComponent<PlayerNewShooting>();
+        shootingScript = GetComponent<PlayerNewShooting>();
         myRigidBody = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         canMoveSideways = false;
@@ -79,7 +77,7 @@ public class PlayerMovementBase : MonoBehaviour
             }
             else if (inputScript.scrollwheel != 0)
             {
-                shootingScript1.ChangeActiveWeapon();
+                shootingScript.ChangeActiveWeapon();
             }
             else if (surroundingsCheckerScript.isGrounded)
             {

@@ -23,10 +23,11 @@ MonoBehaviour:
   activeBulletCase: 3
   DualWeildingShootingStyle: 0
   localOffsetGrip: {x: 0.83, y: 0.09}
+  localGripRotation: {x: 0, y: 0, z: 0, w: 0}
   localOffsetShootingPoint: {x: 0.305, y: 0.004}
   localOffsetMuzzleFlashPoint: {x: 0.658, y: 0.004}
   localOffsetCaseEjector: {x: -0.28, y: 0.21}
-  damage: 0
+  damage: 10
   bulletSpeed: 1750
   bulletLifeTime: 0.2
   rateOfFire: 0

@@ -15,9 +15,11 @@ GameObject:
   - component: {fileID: 8249080983057981550}
   - component: {fileID: 5059737361700824753}
   - component: {fileID: 3600779660059019230}
+  - component: {fileID: -7764269785736427423}
+  - component: {fileID: 7181243952866343319}
   m_Layer: 0
   m_Name: bullet
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -130,7 +132,7 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1
   m_Material: {fileID: 0}
-  m_Interpolate: 1
+  m_Interpolate: 2
   m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 0
@@ -146,22 +148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22678c97abf474746b370caa20772071, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformsLayerMask:
-    serializedVersion: 2
-    m_Bits: 256
-  elevatorsLayerMask:
-    serializedVersion: 2
-    m_Bits: 8192
-  destroyableLayerMask:
-    serializedVersion: 2
-    m_Bits: 4096
-  enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 16384
-  deadEnemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 32768
-  bloodParticlesPrefab: {fileID: 6873355935780043820, guid: 099bd12bbd1e5b642974c4545159fae4, type: 3}
 --- !u!96 &5059737361700824753
 TrailRenderer:
   serializedVersion: 2
@@ -272,4 +258,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 508f2bb9969df6045a25d1954e26edfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeTime: 1
+--- !u!114 &-7764269785736427423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3680564830455689931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ea65a0ec33be2e429b93f176d529a15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactablePlatforms:
+    serializedVersion: 2
+    m_Bits: 512
+  nonInteractablePlatforms:
+    serializedVersion: 2
+    m_Bits: 256
+  player:
+    serializedVersion: 2
+    m_Bits: 1024
+  enemy:
+    serializedVersion: 2
+    m_Bits: 2048
+  destroyable:
+    serializedVersion: 2
+    m_Bits: 4096
+  destroyedElements:
+    serializedVersion: 2
+    m_Bits: 8192
+  bloodParticlesPrefab: {fileID: 6873355935780043820, guid: 099bd12bbd1e5b642974c4545159fae4, type: 3}
+--- !u!114 &7181243952866343319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3680564830455689931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 061ee9f2115944d46824e4f54136ec16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

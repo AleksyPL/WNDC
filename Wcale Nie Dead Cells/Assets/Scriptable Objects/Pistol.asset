@@ -23,12 +23,13 @@ MonoBehaviour:
   activeBulletCase: 0
   DualWeildingShootingStyle: 1
   localOffsetGrip: {x: 0.551, y: 0.012}
+  localGripRotation: {x: 0, y: 0, z: 0, w: 0}
   localOffsetShootingPoint: {x: 0.17, y: 0.13}
   localOffsetMuzzleFlashPoint: {x: 0.17, y: 0.13}
   localOffsetCaseEjector: {x: 0.015, y: 0.21}
   damage: 5
-  bulletSpeed: 2000
-  bulletLifeTime: 1.1
+  bulletSpeed: 4500
+  bulletLifeTime: 1
   rateOfFire: 0.5
   reloadTime: 1
   magazineSize: 15

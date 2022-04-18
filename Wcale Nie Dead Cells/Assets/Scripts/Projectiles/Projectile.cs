@@ -9,10 +9,10 @@ public class Projectile : MonoBehaviour
     internal float damage;
     internal float speed;
     internal DestroyAfterTime destroyingScript;
-    public LayerMask platformsLayerMask;
-    public LayerMask elevatorsLayerMask;
-    public LayerMask destroyableLayerMask;
-    public LayerMask enemyLayerMask;
-    public LayerMask deadEnemyLayerMask;
-    public GameObject bloodParticlesPrefab;
+    internal DamageSystem damageSystemSript;
+    //public LayerMask platformsLayerMask;
+    //public LayerMask elevatorsLayerMask;
+    //public LayerMask destroyableLayerMask;
+    //public LayerMask enemyLayerMask;
+    //public LayerMask deadEnemyLayerMask;
 }

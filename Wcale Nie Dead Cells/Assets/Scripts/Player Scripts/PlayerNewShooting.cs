@@ -6,11 +6,6 @@ using UnityEngine;
 
 public class PlayerNewShooting : MonoBehaviour
 {
-    //public enum DualWeildingShooting
-    //{
-    //    alternately,
-    //    simultaneously
-    //}
     [Header("Hands")]
     internal bool aimWithLeftArm;
     internal bool aimWithRightArm;
@@ -22,7 +17,6 @@ public class PlayerNewShooting : MonoBehaviour
     public GameObject rightHand;
     public GameObject leftHand;
     //[Header("General")]
-    //public DualWeildingShooting DualWeildingShootingStyle;
     private bool dualWeildingFiredFromRightSide;
     private bool isReloading;
     private float reloadCounter;
@@ -32,11 +26,14 @@ public class PlayerNewShooting : MonoBehaviour
     private float bulletsFiredInBurst;
     [Header("HitScan Specific")]
     public LayerMask platformsLayerMask;
-    public LayerMask elevatorsLayerMask;
+    //public LayerMask elevatorsLayerMask;
     public LayerMask destroyableLayerMask;
     public LayerMask enemyLayerMask;
     public LayerMask deadEnemyLayerMask;
     public GameObject bloodParticlesPrefab;
+    public GameObject HitScanBullet;
+    public Gradient laserGradient;
+    public Gradient bulletTrailGradient;
     //private bool canFireInBurst;
     void Start()
     {
@@ -92,9 +89,12 @@ public class PlayerNewShooting : MonoBehaviour
             if (baseMovementScript.mainPlayerScript.inventory.weaponsAmount[activeWeaponIndex] == 1)
             {
                 rightHandWeaponHolder.transform.SetParent(rightHand.transform);
-                aimWithRightArm = true;
                 EquipWeapon(rightHandWeaponHolder);
                 UnequipWeapon(leftHandWeaponHolder);
+                if(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeWeaponType == Weapon.WeaponType.firearm)
+                {
+                    aimWithRightArm = true;
+                }
             }
             else if (baseMovementScript.mainPlayerScript.inventory.weaponsAmount[activeWeaponIndex] == 2)
             {
@@ -113,12 +113,12 @@ public class PlayerNewShooting : MonoBehaviour
     }
     private void EquipWeapon(GameObject weaponHolder)
     {
-        if(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeWeaponType == Weapon.WeaponType.firearm)
+        weaponHolder.transform.localPosition = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].localOffsetGrip;
+        weaponHolder.GetComponent<SpriteRenderer>().sprite = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].weaponSprite;
+        weaponHolder.transform.localRotation = Quaternion.identity;
+        weaponHolder.transform.localRotation = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].localGripRotation;
+        if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeWeaponType == Weapon.WeaponType.firearm)
         {
-            //weapon sprite and grip
-            weaponHolder.transform.localPosition = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].localOffsetGrip;
-            weaponHolder.GetComponent<SpriteRenderer>().sprite = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].weaponSprite;
-            weaponHolder.transform.localRotation = Quaternion.identity;
             //shooting point
             GameObject shootingPoint = weaponHolder.transform.Find("ShootingPoint").gameObject;
             shootingPoint.transform.localPosition = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].localOffsetShootingPoint;
@@ -135,19 +135,13 @@ public class PlayerNewShooting : MonoBehaviour
             grenadeLauncherCaseEjectionPoint.transform.localPosition = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].localOffsetCaseEjector;
             currentMagazine = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].magazineSize * baseMovementScript.mainPlayerScript.inventory.weaponsAmount[activeWeaponIndex];
         }
-        else if(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeWeaponType == Weapon.WeaponType.melee || baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeWeaponType == Weapon.WeaponType.grenade)
-        {
-            //weapon sprite and grip
-            weaponHolder.transform.localPosition = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].localOffsetGrip;
-            weaponHolder.GetComponent<SpriteRenderer>().sprite = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].weaponSprite;
-            weaponHolder.transform.localRotation = Quaternion.identity;
-        }
     }
     private void UnequipWeapon(GameObject weaponHolder)
     {
         weaponHolder.transform.SetParent(neutralWeaponHolder.transform);
         //weapon sprite and grip
         weaponHolder.transform.localPosition = Vector3.zero;
+        weaponHolder.transform.localRotation = Quaternion.Euler(0, 0, 0);
         weaponHolder.GetComponent<SpriteRenderer>().sprite = null;
         //shooting point
         GameObject shootingPoint = weaponHolder.transform.Find("ShootingPoint").gameObject;
@@ -248,29 +242,35 @@ public class PlayerNewShooting : MonoBehaviour
             if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeProjectileMode == Weapon.ProjectileMode.multiple)
             {
                 GameObject shootingPoint = weaponHolder.transform.Find("ShootingPoint").gameObject;
+                Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].muzzleFlash, shootingPoint.transform.position, Quaternion.identity);
                 float facingRotation = Mathf.Atan2(shootingPoint.transform.right.y, shootingPoint.transform.right.x) * Mathf.Rad2Deg;
-                float startRotation = facingRotation + baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].spreadOfMultiProjectileWeapons / 2f;
-                float angleIncrease = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].spreadOfMultiProjectileWeapons / (float)baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].numberOfProjectilesPerShot - 1f;
-                for (int i = 0; i < baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].numberOfProjectilesPerShot; i++)
+                float angle = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].spreadOfMultiProjectileWeapons / baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].numberOfProjectilesPerShot;
+                float startingValue = 0.5f;
+                if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].numberOfProjectilesPerShot % 2 == 1)
                 {
-                    float tempRotation = startRotation - angleIncrease * i;
-                    Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].muzzleFlash, shootingPoint.transform.position, Quaternion.identity);
-                    GameObject myBullet = Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].projectilePrefab, shootingPoint.transform.position, Quaternion.Euler(0f, 0f, tempRotation));
-                    myBullet.GetComponent<Bullet>().Setup(new Vector2(Mathf.Cos(tempRotation * Mathf.Deg2Rad), Mathf.Sin(tempRotation * Mathf.Deg2Rad)),
-                    baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].damage, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletLifeTime, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletSpeed);
+                    GameObject myBullet = Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].projectilePrefab, shootingPoint.transform.position, Quaternion.Euler(0f, 0f, facingRotation));
+                    myBullet.GetComponent<Bullet>().Setup(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].damage / baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].numberOfProjectilesPerShot, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletLifeTime, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletSpeed);
+                    startingValue = 1;
+                }
+                for (float i = startingValue; i < baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].numberOfProjectilesPerShot / 2 + startingValue; i++)
+                {
+                    GameObject myBullet = Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].projectilePrefab, shootingPoint.transform.position, Quaternion.Euler(0f, 0f, facingRotation + (i * angle)));
+                    myBullet.GetComponent<Bullet>().Setup(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].damage / baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].numberOfProjectilesPerShot, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletLifeTime, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletSpeed);
+                    myBullet = Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].projectilePrefab, shootingPoint.transform.position, Quaternion.Euler(0f, 0f, facingRotation - (i * angle)));
+                    myBullet.GetComponent<Bullet>().Setup(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].damage / baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].numberOfProjectilesPerShot, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletLifeTime, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletSpeed);
                 }
             }
-            else if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeProjectileMode == Weapon.ProjectileMode.explosive)
-            {
-                //GameObject shootingPoint = weaponHolder.transform.Find("ShootingPoint").gameObject;
-                //TODO Grenade Launcher
-            }
-            else if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeProjectileMode == Weapon.ProjectileMode.single)
+            //else if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeProjectileMode == Weapon.ProjectileMode.explosive)
+            //{
+            //    GameObject shootingPoint = weaponHolder.transform.Find("ShootingPoint").gameObject;
+            //    //TODO Grenade Launcher
+            //}
+            else if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeProjectileMode == Weapon.ProjectileMode.single || baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeProjectileMode == Weapon.ProjectileMode.explosive)
             {
                 GameObject shootingPoint = weaponHolder.transform.Find("ShootingPoint").gameObject;
                 Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].muzzleFlash, shootingPoint.transform.position, weaponHolder.transform.rotation);
                 GameObject myBullet = Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].projectilePrefab, shootingPoint.transform.position, weaponHolder.transform.rotation);
-                myBullet.GetComponent<Bullet>().Setup(shootingPoint.transform.right, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].damage,
+                myBullet.GetComponent<Bullet>().Setup(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].damage,
                     baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletLifeTime, baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletSpeed);
             }
             baseMovementScript.canShoot = false;
@@ -293,7 +293,6 @@ public class PlayerNewShooting : MonoBehaviour
                         Instantiate(bloodParticlesPrefab, hit[i].point, Quaternion.identity);
                         if (hit[i].collider.gameObject.GetComponent<Enemy>())
                         {
-                            Debug.Log("Hit");
                             hit[i].collider.gameObject.GetComponent<Enemy>().DealDamage(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].damage);
                         }
                         if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeHitscanPenetrationMode == Weapon.HitscanPenetrationMode.firstHit)
@@ -308,22 +307,24 @@ public class PlayerNewShooting : MonoBehaviour
                         if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeHitscanPenetrationMode == Weapon.HitscanPenetrationMode.firstHit)
                             maxIndex = i;
                     }
-                    if (hit[i].collider.gameObject.layer == Mathf.Log(platformsLayerMask, 2) || hit[i].collider.gameObject.layer == Mathf.Log(elevatorsLayerMask, 2))
+                    if (hit[i].collider.gameObject.layer == Mathf.Log(platformsLayerMask, 2))
+                    //if (hit[i].collider.gameObject.layer == Mathf.Log(platformsLayerMask, 2) || hit[i].collider.gameObject.layer == Mathf.Log(elevatorsLayerMask, 2))
                         maxIndex = i;
                 }
-                if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeProjectileMode == Weapon.ProjectileMode.laser)
+                GameObject myLaser = Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].projectilePrefab, shootingPoint.transform);
+                if (myLaser.GetComponent<DestroyAfterTime>())
                 {
-                    GameObject myLaser = Instantiate(baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].projectilePrefab, shootingPoint.transform);
-                    if(myLaser.GetComponent<DestroyAfterTime>())
-                    {
-                        myLaser.GetComponent<DestroyAfterTime>().lifeTime = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletLifeTime;
-                    }
-                    if(myLaser.GetComponent<LineRenderer>())
-                    {
-                        myLaser.GetComponent<LineRenderer>().SetPosition(0,shootingPoint.transform.position);
-                        myLaser.GetComponent<LineRenderer>().SetPosition(1, hit[maxIndex].point);
-                        myLaser.GetComponent<LineRenderer>().enabled = true;
-                    }
+                    myLaser.GetComponent<DestroyAfterTime>().lifeTime = baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].bulletLifeTime;
+                }
+                if (myLaser.GetComponent<LineRenderer>())
+                {
+                    myLaser.GetComponent<LineRenderer>().SetPosition(0, shootingPoint.transform.position);
+                    myLaser.GetComponent<LineRenderer>().SetPosition(1, hit[maxIndex].point);
+                    if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeProjectileMode == Weapon.ProjectileMode.laser)
+                        myLaser.GetComponent<LineRenderer>().colorGradient = laserGradient;
+                    else
+                        myLaser.GetComponent<LineRenderer>().colorGradient = bulletTrailGradient;
+                    myLaser.GetComponent<LineRenderer>().enabled = true;
                 }
                 baseMovementScript.canShoot = false;
                 ThrowCorrectEmptyCase(weaponHolder);

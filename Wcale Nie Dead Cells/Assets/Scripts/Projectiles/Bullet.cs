@@ -8,49 +8,52 @@ public class Bullet : Projectile
     {
         rb = GetComponent<Rigidbody2D>();
         destroyingScript = GetComponent<DestroyAfterTime>();
+        damageSystemSript = GetComponent<DamageSystem>();
     }
     void Update()
     {
-        rb.velocity = speed * Time.deltaTime * launchDirection;   
+        rb.velocity = speed * Time.deltaTime * transform.right;   
     }
-    public void Setup(Vector2 newDirection, float newDamage, float newLifeTime, float newSpeed)
+    public void Setup(float newDamage, float newLifeTime, float newSpeed)
     {
-        launchDirection = newDirection;
+        //transform.rotation = rotarion;
+        //launchDirection = newDirection;
         speed = newSpeed;
         damage = newDamage;
         destroyingScript.lifeTime = newLifeTime;
-        transform.position = new Vector3(this.transform.position.x, this.transform.position.y, 0);
         destroyingScript.enabled = true;
+        transform.position = new Vector3(transform.position.x, transform.position.y, 0);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == Mathf.Log(platformsLayerMask, 2) || collision.gameObject.layer == Mathf.Log(elevatorsLayerMask, 2))
-        {
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.layer == Mathf.Log(enemyLayerMask, 2))
-        {
-            if (collision.GetComponent<Enemy>())
-            {
-                Instantiate(bloodParticlesPrefab, transform.position, Quaternion.identity);
-                collision.gameObject.GetComponent<Enemy>().DealDamage(damage);
-            }
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.layer == Mathf.Log(destroyableLayerMask, 2))
-        {
-            if (collision.GetComponent<Destroyable>())
-            {
-                collision.gameObject.GetComponent<Destroyable>().DestroyObject();
-            }
-            Destroy(gameObject);
-        }
-        else if (collision.gameObject.layer == Mathf.Log(deadEnemyLayerMask, 2))
-        {
-            //TODO add force to limbs
-            Instantiate(bloodParticlesPrefab, transform.position, Quaternion.identity);
-            Destroy(gameObject);
-        }
+        damageSystemSript.CheckWhatHasBeenHitted(collision.gameObject, damage, new Vector3(0, 0, transform.rotation.z), speed);
+        //if (collision.gameObject.layer == Mathf.Log(platformsLayerMask, 2) || collision.gameObject.layer == Mathf.Log(elevatorsLayerMask, 2))
+        //{
+        //    Destroy(gameObject);
+        //}
+        //else if (collision.gameObject.layer == Mathf.Log(enemyLayerMask, 2))
+        //{
+        //    if (collision.GetComponent<Enemy>())
+        //    {
+        //        Instantiate(bloodParticlesPrefab, transform.position, Quaternion.identity);
+        //        collision.gameObject.GetComponent<Enemy>().DealDamage(damage);
+        //    }
+        //    Destroy(gameObject);
+        //}
+        //else if (collision.gameObject.layer == Mathf.Log(destroyableLayerMask, 2))
+        //{
+        //    if (collision.GetComponent<Destroyable>())
+        //    {
+        //        collision.gameObject.GetComponent<Destroyable>().DestroyObject();
+        //    }
+        //    Destroy(gameObject);
+        //}
+        //else if (collision.gameObject.layer == Mathf.Log(deadEnemyLayerMask, 2))
+        //{
+        //    //TODO add force to limbs
+        //    Instantiate(bloodParticlesPrefab, transform.position, Quaternion.identity);
+        //    Destroy(gameObject);
+        //}
         //if (collision.gameObject.name == "Platforms")
         //{
         //    Destroy(gameObject);

@@ -20,7 +20,7 @@ public class PlayerMovementAnimator : MonoBehaviour
     }
     private void CheckIKSolversAndAnimationLayers()
     {
-        if(baseMovementScript.shootingScript1.aimWithLeftArm)
+        if(baseMovementScript.shootingScript.aimWithLeftArm)
         {
             leftArmIKSolver.SetActive(false);
             animator.SetLayerWeight(animator.GetLayerIndex("Left Arm"), 0);
@@ -30,7 +30,7 @@ public class PlayerMovementAnimator : MonoBehaviour
             leftArmIKSolver.SetActive(true);
             animator.SetLayerWeight(animator.GetLayerIndex("Left Arm"), 1);
         }
-        if (baseMovementScript.shootingScript1.aimWithRightArm)
+        if (baseMovementScript.shootingScript.aimWithRightArm)
         {
             animator.SetLayerWeight(animator.GetLayerIndex("Right Arm"), 0);
             rightArmIKSolver.SetActive(false);
@@ -43,13 +43,16 @@ public class PlayerMovementAnimator : MonoBehaviour
     }
     void Update()
     {
-        CheckIKSolversAndAnimationLayers();
-        if(baseMovementScript.shootingScript1.aimWithRightArm)
-            CalculateAiming(rightArm);
-        if (baseMovementScript.shootingScript1.aimWithLeftArm)
-            CalculateAiming(leftArm);
         if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.dead)
             ragdollScript.ToggleRagdoll(true);
+        else
+        {
+            CheckIKSolversAndAnimationLayers();
+            if (baseMovementScript.shootingScript.aimWithRightArm)
+                CalculateAiming(rightArm);
+            if (baseMovementScript.shootingScript.aimWithLeftArm)
+                CalculateAiming(leftArm);
+        }
     }
     internal void AnimateCharacter()
     {
@@ -100,7 +103,36 @@ public class PlayerMovementAnimator : MonoBehaviour
     }
     private void CalculateAiming(GameObject arm)
     {
-        Vector3 perendicular = arm.transform.position - baseMovementScript.inputScript.mousePosition;
+        Vector3 weaponOffset = Vector3.zero;
+       
+        if (baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].activeWeaponType == Weapon.WeaponType.melee)
+        {
+            weaponOffset = new Vector3(0, baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetGrip.y, 0);
+        }
+        else if (baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].activeWeaponType == Weapon.WeaponType.firearm)
+        {
+            //float weaponOffsetF = baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetShootingPoint.y
+            //     + baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetGrip.y;
+            //Instantiate(null, arm.transform, arm);
+            //Debug.DrawLine(baseMovementScript.inputScript.mousePosition, new Vector3(0, baseMovementScript.inputScript.mousePosition.y + weaponOffsetF, 0));
+           //if (baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetShootingPoint.y >= baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetGrip.y)
+           //{
+           //    //weaponOffset = new Vector3(0, baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetShootingPoint.y, 0);
+           //    //weaponOffset = baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetShootingPoint;
+           //    weaponOffset = baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetShootingPoint * baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetGrip;
+           //    weaponOffset = new Vector3(weaponOffset.x * 0.69f, weaponOffset.y * 0.69f);
+           //}
+           //else
+           //{
+           //    //weaponOffset = new Vector3(0, baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetGrip.y, 0);
+           //    weaponOffset = baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetGrip;
+           //}
+            weaponOffset = baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetShootingPoint
+                + baseMovementScript.mainPlayerScript.inventory.weapons[baseMovementScript.shootingScript.activeWeaponIndex].localOffsetGrip;
+            weaponOffset = new Vector3(weaponOffset.x * 0.69f, weaponOffset.y * 0.69f);
+        }
+        Vector3 perendicular = arm.transform.position - baseMovementScript.inputScript.mousePosition + weaponOffset;
+        //Vector3 perendicular = arm.transform.position - baseMovementScript.inputScript.mousePosition;
         Quaternion value = Quaternion.LookRotation(Vector3.forward, perendicular);
         if (baseMovementScript.surroundingsCheckerScript.isFacingRight)
         {

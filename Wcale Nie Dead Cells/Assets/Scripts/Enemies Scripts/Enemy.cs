@@ -21,13 +21,15 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.currentState = StateMachine.idle;
-        this.animatorScript = GetComponent<EnemyAnimator>();
-        this.surroundingsCheckerScript = GetComponent<EnemySurroundingsChecker>();
-        this.destroyingScript = GetComponent<DestroyAfterTime>();
-        this.rb = GetComponent<Rigidbody2D>();
-        this.boxCollider = GetComponent<BoxCollider2D>();
-        this.animatorScript = GetComponent<EnemyAnimator>();
+        currentState = StateMachine.idle;
+        animatorScript = GetComponent<EnemyAnimator>();
+        surroundingsCheckerScript = GetComponent<EnemySurroundingsChecker>();
+        destroyingScript = GetComponent<DestroyAfterTime>();
+        rb = GetComponent<Rigidbody2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
+        animatorScript = GetComponent<EnemyAnimator>();
+        destroyingScript.lifeTime = 3f;
+        destroyingScript.colorFadeTick = destroyingScript.lifeTime / 255;
     }
     void Update()
     {
@@ -35,14 +37,14 @@ public class Enemy : MonoBehaviour
     }
     public void DealDamage(float projectileDamage)
     {
-        this.HP -= projectileDamage;
-        if(this.HP <= 0)
+        HP -= projectileDamage;
+        if(HP <= 0)
         {
-            this.currentState = StateMachine.dead;
-            this.gameObject.layer = LayerMask.NameToLayer("DeadEnemy");
+            currentState = StateMachine.dead;
+            gameObject.layer = LayerMask.NameToLayer("DestroyedElements");
             foreach (Transform child in transform.GetComponentsInChildren<Transform>())
             {
-                child.gameObject.layer = LayerMask.NameToLayer("DeadEnemy");
+                child.gameObject.layer = LayerMask.NameToLayer("DestroyedElements");
             }
             destroyingScript.enabled = true;
         }
