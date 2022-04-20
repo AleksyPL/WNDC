@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GrenadeLauncher
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 348989ebccf67b4448b8e26d425fe920, type: 3}
-  muzzleFlash: {fileID: 8759564418832110411, guid: c0bd83051f4d57b4d83c310150215057, type: 3}
+  muzzleFlash: {fileID: 0}
   activeWeaponType: 0
   activeFireMode: 0
   activeProjectileMode: 2
@@ -38,3 +38,5 @@ MonoBehaviour:
   spreadOfMultiProjectileWeapons: 0
   numberOfShotsInBurst: 1
   rateOfFireInBurst: 0
+  explosionRadius: 3
+  explosionEffect: {fileID: 8759564418832110411, guid: c0bd83051f4d57b4d83c310150215057, type: 3}

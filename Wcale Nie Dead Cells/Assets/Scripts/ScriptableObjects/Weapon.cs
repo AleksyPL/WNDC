@@ -10,8 +10,7 @@ public class Weapon : ScriptableObject
     public enum WeaponType
     {
         firearm,
-        melee,
-        grenade
+        melee
     }
     public enum FireMode
     {
@@ -83,4 +82,7 @@ public class Weapon : ScriptableObject
     [Header("Burst Only")]
     public int numberOfShotsInBurst;
     public float rateOfFireInBurst;
+    [Header("Explosive Only")]
+    public float explosionRadius;
+    public GameObject explosionEffect;
 }

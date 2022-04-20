@@ -21,7 +21,7 @@ MonoBehaviour:
   activeHitscanPenetrationMode: 0
   activeHolster: 0
   activeBulletCase: 0
-  DualWeildingShootingStyle: 2
+  DualWeildingShootingStyle: 0
   localOffsetGrip: {x: 0.743, y: -0.018}
   localGripRotation: {x: 0, y: 0, z: 0, w: 0}
   localOffsetShootingPoint: {x: 0, y: 0}
@@ -38,3 +38,5 @@ MonoBehaviour:
   spreadOfMultiProjectileWeapons: 0
   numberOfShotsInBurst: 0
   rateOfFireInBurst: 0
+  explosionRadius: 0
+  explosionEffect: {fileID: 0}

@@ -8,6 +8,8 @@ TagManager:
   - Elevator
   - Chain
   - Projectile
+  - GameRoomBounds
+  - DestroyedObject
   layers:
   - Default
   - TransparentFX
@@ -23,7 +25,7 @@ TagManager:
   - Enemy
   - Destroyable
   - DestroyedElements
-  - 
+  - Decorations
   - 
   - 
   - 

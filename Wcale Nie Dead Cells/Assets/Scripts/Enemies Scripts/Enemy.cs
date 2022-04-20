@@ -28,8 +28,8 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         animatorScript = GetComponent<EnemyAnimator>();
-        destroyingScript.lifeTime = 3f;
-        destroyingScript.colorFadeTick = destroyingScript.lifeTime / 255;
+        destroyingScript.lifeTime = 5f;
+        //destroyingScript.colorFadeTick = destroyingScript.lifeTime / 255;
     }
     void Update()
     {
@@ -47,6 +47,7 @@ public class Enemy : MonoBehaviour
                 child.gameObject.layer = LayerMask.NameToLayer("DestroyedElements");
             }
             destroyingScript.enabled = true;
+            animatorScript.ragdollScript.ToggleRagdoll(true);
         }
     }
 }

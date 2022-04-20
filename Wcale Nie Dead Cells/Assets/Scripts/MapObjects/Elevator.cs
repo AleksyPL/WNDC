@@ -11,7 +11,7 @@ public class Elevator : Interactable
     public float elevatorTravelSpeed;
     private bool elevatorActive;
     private bool playerCanActivateElevator;
-    private bool playerIsStandingOnTheElevator;
+    //private bool playerIsStandingOnTheElevator;
     private Vector3 elevatorFinalPosition;
     public enum ElevatorDirections
     {
@@ -22,7 +22,7 @@ public class Elevator : Interactable
     {
         elevatorActive = false;
         playerCanActivateElevator = false;
-        playerIsStandingOnTheElevator = false;
+        //playerIsStandingOnTheElevator = false;
         elevatorFinalPosition = Vector3.zero;
         CreateRopes();
     }
@@ -111,9 +111,7 @@ public class Elevator : Interactable
                 {
                     bool willTouchingGround = Physics2D.Raycast(transform.position, Vector2.down, i, whatIsGround);
                     if (willTouchingGround)
-                    {
                         return i;
-                    }
                 }
             }
             else
@@ -183,30 +181,26 @@ public class Elevator : Interactable
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag == "Player")
-        {
+        if(collision.gameObject.CompareTag("Player"))
             playerCanActivateElevator = true;
-        }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
-        {
+        if (collision.gameObject.CompareTag("Player"))
             playerCanActivateElevator = false;
-        }
     }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            playerIsStandingOnTheElevator = true;
-        }
-    }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            playerIsStandingOnTheElevator = false;
-        }
-    }
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))
+    //    {
+    //        playerIsStandingOnTheElevator = true;
+    //    }
+    //}
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))
+    //    {
+    //        playerIsStandingOnTheElevator = false;
+    //    }
+    //}
 }

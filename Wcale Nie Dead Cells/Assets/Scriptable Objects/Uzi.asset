@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Uzi
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 9e1efdfd680bea04098d138f53086bdc, type: 3}
-  muzzleFlash: {fileID: 8759564418832110411, guid: c0bd83051f4d57b4d83c310150215057, type: 3}
+  muzzleFlash: {fileID: 8759564418832110411, guid: 48cafe1bb29873e4d93704ff5e3f5b42, type: 3}
   activeWeaponType: 0
   activeFireMode: 1
   activeProjectileMode: 0
@@ -27,7 +27,7 @@ MonoBehaviour:
   localOffsetShootingPoint: {x: 0.38, y: 0.2}
   localOffsetMuzzleFlashPoint: {x: 0.38, y: 0.2}
   localOffsetCaseEjector: {x: -0.03, y: 0.3}
-  damage: 0
+  damage: 5
   bulletSpeed: 4500
   bulletLifeTime: 0.8
   rateOfFire: 0.1

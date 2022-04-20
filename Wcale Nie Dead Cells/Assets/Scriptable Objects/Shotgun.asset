@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shotgun
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 13f19229f2b3a0e4e88c7fbd00ef74b5, type: 3}
-  muzzleFlash: {fileID: 8759564418832110411, guid: c0bd83051f4d57b4d83c310150215057, type: 3}
+  muzzleFlash: {fileID: 8759564418832110411, guid: 48cafe1bb29873e4d93704ff5e3f5b42, type: 3}
   activeWeaponType: 0
   activeFireMode: 0
   activeProjectileMode: 1

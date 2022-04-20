@@ -9,6 +9,7 @@ public class Ragdoll : MonoBehaviour
     public Collider2D mainCollider;
     public Rigidbody2D mainRigidBody;
     public Animator animator;
+    private bool ragdollActive = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +17,7 @@ public class Ragdoll : MonoBehaviour
     }
     internal void ToggleRagdoll(bool argument)
     {
+        ragdollActive = argument;
         for(int i=0;i<IKSolvers.Length;i++)
         {
             IKSolvers[i].SetActive(!argument);

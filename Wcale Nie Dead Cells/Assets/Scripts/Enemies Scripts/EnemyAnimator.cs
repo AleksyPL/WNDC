@@ -6,7 +6,7 @@ public class EnemyAnimator : MonoBehaviour
 {
     internal Animator animator;
     internal Enemy baseEnemyScript;
-    private Ragdoll ragdollScript;
+    internal Ragdoll ragdollScript;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -15,9 +15,6 @@ public class EnemyAnimator : MonoBehaviour
     }
     void Update()
     {
-        if(baseEnemyScript.currentState == Enemy.StateMachine.dead)
-        {
-            ragdollScript.ToggleRagdoll(true);
-        }
+        
     }
 }

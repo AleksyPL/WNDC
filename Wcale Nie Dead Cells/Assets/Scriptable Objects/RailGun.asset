@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RailGun
   m_EditorClassIdentifier: 
   weaponSprite: {fileID: 21300000, guid: 864a6b429614ecd4dbb0138d7f21b6c5, type: 3}
-  muzzleFlash: {fileID: 8759564418832110411, guid: b51740c77996ba144bec5a5287931b95, type: 3}
+  muzzleFlash: {fileID: 8759564418832110411, guid: 82960b8c1c4596a448c3e712492e2fc0, type: 3}
   activeWeaponType: 0
   activeFireMode: 0
   activeProjectileMode: 3

@@ -13,6 +13,7 @@ public class DestroyAfterTime : MonoBehaviour
     {
         lifeTimeCounter = 0;
         colorFadeCounter = 0;
+        colorFadeTick = lifeTime / 255;
         fadingElements = GetComponentsInChildren<SpriteRenderer>();
     }
     // Update is called once per frame
@@ -20,7 +21,7 @@ public class DestroyAfterTime : MonoBehaviour
     {
         lifeTimeCounter += Time.deltaTime;
         colorFadeCounter += Time.deltaTime;
-        if(fadingElements.Length > 0 && colorFadeCounter >= colorFadeTick && transform.CompareTag("Enemy"))
+        if(fadingElements.Length > 0 && colorFadeCounter >= colorFadeTick && (transform.CompareTag("Enemy") || transform.CompareTag("DestroyedObject")))
         {
             FadeOut();
         }
