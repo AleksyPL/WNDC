@@ -8,9 +8,14 @@ public class Destroyable : MonoBehaviour
     public GameObject crackedVersion;
     public GameObject itemToSpawn;
     public float chancesToSpawnItem;
+    private void Start()
+    {
+        if (chancesToSpawnItem > 100)
+            chancesToSpawnItem = 100;
+    }
     private bool DecideToSpawnItem()
     {
-        int randomNumber = Random.Range(0, 100);
+        int randomNumber = Random.Range(1, 100);
         if (randomNumber <= chancesToSpawnItem)
             return true;
         else

@@ -29,43 +29,28 @@ public class PlayerInventory : MonoBehaviour
         {
             for (int i = 0; i < weaponsAmount.Count; i++)
             {
-                if (weaponsAmount[i] == 0)
-                {
+                if (weaponsAmount[i] == 0 || (weapons[i].DualWeildingShootingStyle == Weapon.DualWeildingShooting.notAvailable && weaponsAmount[i] == 2))
                     weaponsAmount[i] = 1;
-                }
                 if (weaponsAmount[i] > 2)
-                {
                     weaponsAmount[i] = 2;
-                }
-                if (weapons[i].DualWeildingShootingStyle == Weapon.DualWeildingShooting.notAvailable && weaponsAmount[i] == 2)
-                {
-                    weaponsAmount[i] = 1;
-                }
             }
         }
     }
-    private void AddWeapon(Weapon newWeapon)
+    public void AddWeapon(Weapon newWeapon)
     {
         if(!weapons.Contains(newWeapon))
         {
             weapons.Add(newWeapon);
-            weaponsAmount.Add(1);
-            if (weapons.Count == 1)
-            {
-                mainPlayerScript.baseMovementScript.shootingScript.SetParents();
-            }
+            weaponsAmount.Add(1);  
             SortWeapons();
         }
         else
         {
             for(int i=0;i<weapons.Count; i++)
-            {
-                if(weapons[i]==newWeapon && weapons[i].DualWeildingShootingStyle != Weapon.DualWeildingShooting.notAvailable && weaponsAmount[i] == 1)
-                {
+                if (weapons[i] == newWeapon && weapons[i].DualWeildingShootingStyle != Weapon.DualWeildingShooting.notAvailable && weaponsAmount[i] == 1)
                     weaponsAmount[i]++;
-                }
-            }
         }
+        mainPlayerScript.baseMovementScript.shootingScript.SetParents();
     }
     private void SortWeapons()
     {

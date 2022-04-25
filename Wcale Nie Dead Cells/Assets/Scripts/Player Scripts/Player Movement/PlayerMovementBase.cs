@@ -56,7 +56,6 @@ public class PlayerMovementBase : MonoBehaviour
         surroundingsCheckerScript.CheckSurroundings();
         MoveCharacter();
         inputScript.FlipCharacter();
-        animatorScript.AnimateCharacter();
     }
     private void MoveCharacter()
     {

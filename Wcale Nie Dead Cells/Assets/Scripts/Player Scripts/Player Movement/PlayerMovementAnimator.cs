@@ -6,23 +6,25 @@ using UnityEngine;
 public class PlayerMovementAnimator : MonoBehaviour
 {
     private PlayerMovementBase baseMovementScript;
-    private Ragdoll ragdollScript;
     public GameObject rightArm;
     public GameObject leftArm;
     public GameObject rightArmIKSolver;
     public GameObject leftArmIKSolver;
+    internal Ragdoll ragdollScript;
     internal Animator animator;
     void Start()
     {
         baseMovementScript = GetComponent<PlayerMovementBase>();
         animator = GetComponent<Animator>();
         ragdollScript = GetComponent<Ragdoll>();
+        CheckIKSolversAndAnimationLayers();
     }
     private void CheckIKSolversAndAnimationLayers()
     {
         if(baseMovementScript.shootingScript.aimWithLeftArm)
         {
             leftArmIKSolver.SetActive(false);
+            //animator.SetFloat("RunDirection", 0);
             animator.SetLayerWeight(animator.GetLayerIndex("Left Arm"), 0);
         }
         else
@@ -32,27 +34,24 @@ public class PlayerMovementAnimator : MonoBehaviour
         }
         if (baseMovementScript.shootingScript.aimWithRightArm)
         {
-            animator.SetLayerWeight(animator.GetLayerIndex("Right Arm"), 0);
             rightArmIKSolver.SetActive(false);
+            //animator.SetFloat("RunDirection", 0);
+            animator.SetLayerWeight(animator.GetLayerIndex("Right Arm"), 0);
         } 
         else
         {
             rightArmIKSolver.SetActive(true);
             animator.SetLayerWeight(animator.GetLayerIndex("Right Arm"), 1);
-        }  
+        }
     }
     void Update()
     {
-        if (baseMovementScript.mainPlayerScript.currentState == Player.StateMachine.dead)
-            ragdollScript.ToggleRagdoll(true);
-        else
-        {
-            CheckIKSolversAndAnimationLayers();
-            if (baseMovementScript.shootingScript.aimWithRightArm)
-                CalculateAiming(rightArm);
-            if (baseMovementScript.shootingScript.aimWithLeftArm)
-                CalculateAiming(leftArm);
-        }
+        CheckIKSolversAndAnimationLayers();
+        if (baseMovementScript.shootingScript.aimWithRightArm)
+            CalculateAiming(rightArm);
+        if (baseMovementScript.shootingScript.aimWithLeftArm)
+            CalculateAiming(leftArm);
+        AnimateCharacter();
     }
     internal void AnimateCharacter()
     {
