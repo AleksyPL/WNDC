@@ -10,7 +10,6 @@ public class Ragdoll : MonoBehaviour
     public Rigidbody2D mainRigidBody;
     public Animator animator;
     private bool ragdollActive = false;
-    // Start is called before the first frame update
     void Start()
     {
         ToggleRagdoll(false);
@@ -29,11 +28,10 @@ public class Ragdoll : MonoBehaviour
         {
             if (bonesAndLimbs[i].GetComponent<Rigidbody2D>())
             {
-                bonesAndLimbs[i].GetComponent<Rigidbody2D>().simulated = argument;
-            }
-            if (bonesAndLimbs[i].GetComponent<CapsuleCollider2D>())
-            {
-                bonesAndLimbs[i].GetComponent<CapsuleCollider2D>().enabled = argument;
+                if (!argument)
+                    bonesAndLimbs[i].GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
+                else
+                    bonesAndLimbs[i].GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
             }
             if (bonesAndLimbs[i].GetComponent<HingeJoint2D>())
             {

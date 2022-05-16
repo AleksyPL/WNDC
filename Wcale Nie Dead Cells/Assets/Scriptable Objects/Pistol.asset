@@ -38,3 +38,5 @@ MonoBehaviour:
   spreadOfMultiProjectileWeapons: 0
   numberOfShotsInBurst: 1
   rateOfFireInBurst: 0
+  explosionRadius: 0
+  explosionEffect: {fileID: 0}

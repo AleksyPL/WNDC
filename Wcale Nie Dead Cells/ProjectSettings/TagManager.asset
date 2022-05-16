@@ -20,8 +20,8 @@ TagManager:
   - 
   - NonInteractablePlatforms
   - InteractablePlatforms
-  - Player
-  - Enemy
+  - Characters
+  - Hitbox
   - Destroyable
   - DestroyedElements
   - InteractableElements
@@ -58,6 +58,6 @@ TagManager:
   - name: Decorations
     uniqueID: 3598329597
     locked: 0
-  - name: Player
+  - name: Characters
     uniqueID: 409764803
     locked: 0

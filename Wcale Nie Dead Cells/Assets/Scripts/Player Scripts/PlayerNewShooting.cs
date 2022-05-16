@@ -271,7 +271,7 @@ public class PlayerNewShooting : MonoBehaviour
                 {
                     if (baseMovementScript.mainPlayerScript.inventory.weapons[activeWeaponIndex].activeHitscanPenetrationMode == Weapon.HitscanPenetrationMode.firstHit)
                     {
-                        if (hitTableTemp[i].collider.gameObject.CompareTag("GameRoomBounds") || hitTableTemp[i].collider.gameObject.CompareTag("Chain"))
+                        if (hitTableTemp[i].collider.gameObject.name != "GameRoomBoundries" || hitTableTemp[i].collider.gameObject.CompareTag("Chain"))
                             continue;
                         else
                         {
@@ -281,7 +281,7 @@ public class PlayerNewShooting : MonoBehaviour
                     }
                     else
                     {
-                        if (hitTableTemp[i].collider.gameObject.CompareTag("GameRoomBounds") || hitTableTemp[i].collider.gameObject.CompareTag("Chain"))
+                        if (hitTableTemp[i].collider.gameObject.name != "GameRoomBoundries" || hitTableTemp[i].collider.gameObject.CompareTag("Chain"))
                             continue;
                         else if (hitTableTemp[i].collider.gameObject.layer == Mathf.Log(damageSystemScript.interactablePlatforms, 2) || hitTableTemp[i].collider.gameObject.layer == Mathf.Log(damageSystemScript.nonInteractablePlatforms, 2))
                         {

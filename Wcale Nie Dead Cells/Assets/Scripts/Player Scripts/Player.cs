@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
     {
         HP = 10;
     }
-    public void DoDamage(float receivedGiven)
+    public void DealDamage(float receivedGiven)
     {
         HP -= receivedGiven;
         if(HP<=0)

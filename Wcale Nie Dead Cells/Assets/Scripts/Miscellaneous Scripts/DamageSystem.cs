@@ -6,15 +6,14 @@ public class DamageSystem : MonoBehaviour
 {
     public LayerMask interactablePlatforms;
     public LayerMask nonInteractablePlatforms;
-    public LayerMask player;
-    public LayerMask enemy;
+    public LayerMask hitBoxes;
     public LayerMask destroyable;
     public LayerMask destroyedElements;
     public GameObject bloodParticlesPrefab;
 
     public bool CheckWhatHasBeenHitBullet(GameObject receivingDamageObject, float recivedDamage, Vector3 launchDirection, Vector3 hitPoint)
     {
-        if (receivingDamageObject.layer == Mathf.Log(enemy, 2) || receivingDamageObject.layer == Mathf.Log(destroyable, 2))
+        if ((receivingDamageObject.layer == Mathf.Log(hitBoxes, 2) && (receivingDamageObject.CompareTag("Enemy") || receivingDamageObject.CompareTag("Player"))) || receivingDamageObject.layer == Mathf.Log(destroyable, 2))
         {
             DoDamage(receivingDamageObject, recivedDamage, hitPoint);
             return true;
@@ -33,7 +32,7 @@ public class DamageSystem : MonoBehaviour
     }
     public bool CheckWhatHasBeenHitGrenade(GameObject whatCausedAnExplosion, float recivedDamage, Vector3 hitPoint, float explosionRadius, GameObject explosionEffect)
     {
-        if (whatCausedAnExplosion.layer == Mathf.Log(enemy, 2) || whatCausedAnExplosion.layer == Mathf.Log(destroyable, 2) || whatCausedAnExplosion.layer == Mathf.Log(destroyedElements, 2) || whatCausedAnExplosion.layer == Mathf.Log(nonInteractablePlatforms, 2) || (whatCausedAnExplosion.layer == Mathf.Log(interactablePlatforms, 2) && !whatCausedAnExplosion.gameObject.CompareTag("Chain")))
+        if (whatCausedAnExplosion.layer == Mathf.Log(hitBoxes, 2) || whatCausedAnExplosion.layer == Mathf.Log(destroyable, 2) || whatCausedAnExplosion.layer == Mathf.Log(destroyedElements, 2) || whatCausedAnExplosion.layer == Mathf.Log(nonInteractablePlatforms, 2) || (whatCausedAnExplosion.layer == Mathf.Log(interactablePlatforms, 2) && !whatCausedAnExplosion.gameObject.CompareTag("Chain")))
         {
             SpawnParticleEffect(hitPoint, 0.35f, explosionEffect);
             List<GameObject> hitObjects = ReturnObjectsInRadius(hitPoint, explosionRadius);
@@ -41,7 +40,7 @@ public class DamageSystem : MonoBehaviour
             {
                 for (int i = 0; i < hitObjects.Count; i++)
                 {
-                    if (hitObjects[i].layer == Mathf.Log(enemy, 2) || hitObjects[i].layer == Mathf.Log(destroyable, 2))
+                    if (hitObjects[i].layer == Mathf.Log(hitBoxes, 2) || hitObjects[i].layer == Mathf.Log(destroyable, 2))
                     {
                         DoDamage(hitObjects[i], recivedDamage, hitPoint);
                     }
@@ -73,7 +72,7 @@ public class DamageSystem : MonoBehaviour
         {
             for (int i = 0; i < hitObjectsTemp.Length; i++)
             {
-                if (hitObjectsTemp[i].gameObject.layer == Mathf.Log(enemy, 2) || hitObjectsTemp[i].gameObject.layer == Mathf.Log(destroyable, 2) || hitObjectsTemp[i].gameObject.layer == Mathf.Log(destroyedElements, 2))
+                if (hitObjectsTemp[i].gameObject.layer == Mathf.Log(hitBoxes, 2) || hitObjectsTemp[i].gameObject.layer == Mathf.Log(destroyable, 2) || hitObjectsTemp[i].gameObject.layer == Mathf.Log(destroyedElements, 2))
                 {
                     hitObjects.Add(hitObjectsTemp[i].gameObject);
                 }
@@ -99,10 +98,15 @@ public class DamageSystem : MonoBehaviour
     }
     private void DoDamage(GameObject receivingDamageObject, float recivedDamage, Vector3 hitPoint)
     {
-        if (receivingDamageObject.GetComponent<Enemy>())
+        if (receivingDamageObject.GetComponentInParent<Enemy>())
         {
             SpawnParticleEffect(hitPoint, 1f, bloodParticlesPrefab);
-            receivingDamageObject.GetComponent<Enemy>().DealDamage(recivedDamage);
+            receivingDamageObject.GetComponentInParent<Enemy>().DealDamage(recivedDamage);
+        }
+        else if (receivingDamageObject.GetComponentInParent<Player>())
+        {
+            SpawnParticleEffect(hitPoint, 1f, bloodParticlesPrefab);
+            receivingDamageObject.GetComponentInParent<Player>().DealDamage(recivedDamage);
         }
         else if (receivingDamageObject.GetComponent<Destroyable>())
         {
@@ -111,7 +115,7 @@ public class DamageSystem : MonoBehaviour
     }
     private void DoForcePush(GameObject receivingDamageObject, Vector3 launchDirection, float launchForce, Vector3 hitPoint)
     {
-        if (receivingDamageObject.CompareTag("Enemy"))
+        if (receivingDamageObject.CompareTag("Enemy") || receivingDamageObject.CompareTag("Player"))
         {
             SpawnParticleEffect(hitPoint, 1f, bloodParticlesPrefab);
             ShootOffTheLimb(receivingDamageObject);

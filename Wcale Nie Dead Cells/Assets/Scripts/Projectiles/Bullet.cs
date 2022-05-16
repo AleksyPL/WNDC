@@ -24,7 +24,10 @@ public class Bullet : Projectile
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(damageSystemSript.CheckWhatHasBeenHitBullet(collision.gameObject, damage, transform.rotation.eulerAngles, transform.position))
-            Destroy(gameObject);
+        if (collision.name != "GameRoomBoundries")
+        {
+            if (damageSystemSript.CheckWhatHasBeenHitBullet(collision.gameObject, damage, transform.rotation.eulerAngles, transform.position))
+                Destroy(gameObject);
+        }
     }
 }
